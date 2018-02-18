@@ -2,7 +2,6 @@ sudo: required
 
 services:
   - docker
-B
 
 env:
   - DOCKER_COMPOSE_VERSION=1.4.2
