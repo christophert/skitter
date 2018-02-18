@@ -1,0 +1,26 @@
+version: '3'
+services:
+    haproxy:
+        build: loadbal
+        ports:
+            - 1936:1936
+            - 80:80
+        depends_on:
+            - cachea
+            - cacheb
+    cachea:
+        build: cache
+        links:
+            - "weba:web"
+        depends_on:
+            - weba
+    cacheb:
+        build: cache
+        links:
+            - "webb:web"
+        depends_on:
+            - webb
+    weba:
+        build: web
+    webb:
+        build: web
