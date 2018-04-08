@@ -6,18 +6,36 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    protected class TimeoutHandler extends SimpleUrlAuthenticationSuccessHandler {
+        //1hr long session
+        final Integer SESSION_TIMEOUT_IN_SECONDS = 3600 * 30;
+
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            Authentication authentication) throws ServletException, IOException {
+            request.getSession().setMaxInactiveInterval(SESSION_TIMEOUT_IN_SECONDS);
+        }
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.csrf().disable().authorizeRequests()
             .antMatchers("/register").fullyAuthenticated()
             .and()
-            .formLogin();
+            .httpBasic();
     }
 
     @Override

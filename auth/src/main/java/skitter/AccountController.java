@@ -80,9 +80,9 @@ public class AccountController {
      * @return account on successful registration
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json")
-    public Account register(@RequestParam String email,
-                            @RequestParam String firstName,
-                            @RequestParam String lastName) throws SkitterException {
+    public Account register(@RequestParam("email") String email,
+                            @RequestParam("firstName") String firstName,
+                            @RequestParam("lastName") String lastName) throws SkitterException {
         String uid = verifyRitLdapInformation();
 
         accountRepository.save(new Account().withUid(uid)
