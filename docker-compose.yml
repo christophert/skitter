@@ -24,3 +24,5 @@ services:
         build: web
     webb:
         build: web
+    db:
+        build: mysql
