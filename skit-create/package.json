@@ -2,9 +2,10 @@
   "name": "skit-create",
   "version": "1.0.0",
   "description": "Responsible for utilizing elastic search to maintain skits (tweets) for Skitter",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/christophert/skitter#readme",
   "dependencies": {
-    "elasticsearch": "^14.2.2"
+    "elasticsearch": "^14.2.2",
+    "express": "^4.16.3"
   }
 }
