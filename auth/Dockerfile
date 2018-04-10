@@ -1,10 +1,13 @@
-FROM openjdk:8-jdk-alpine
+FROM maven:alpine
 
 MAINTAINER Joseph Bartelmo <jfb3657>
 MAINTAINER Christopher Tran <ctt1414>
 
 VOLUME /tmp
 
-ADD ./target/skitter-auth-1.0-SNAPSHOT.jar auth.jar
+ADD ./src src
+ADD ./pom.xml pom.xml
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/auth.jar"]
+RUN mvn clean install
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/target/skitter-auth-1.0-SNAPSHOT.jar"]
