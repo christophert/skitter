@@ -24,6 +24,7 @@ services:
         build: web
     webb:
         build: web
+    # Activity 7
     skitdb:
         build: elasticsearch
     skitcreate:
@@ -32,3 +33,19 @@ services:
             - 81:81
         depends_on: 
             - skitdb
+    # Activity 4
+    db:
+        build: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: skitter
+            MYSQL_USER: skitter_overlord
+            MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
+            MYSQL_ROOT_PASSWORD: "included because docker said so"
+    authentication:
+        build: auth
+        ports:
+            - 8080:8080
+        depends_on:
+            - db
+        command: dockerize -wait http://db:3306 go auth -v 
