@@ -18,18 +18,6 @@ import java.io.IOException;
 @Configuration
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    protected class TimeoutHandler extends SimpleUrlAuthenticationSuccessHandler {
-        //1hr long session
-        final Integer SESSION_TIMEOUT_IN_SECONDS = 3600 * 30;
-
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            Authentication authentication) throws ServletException, IOException {
-            request.getSession().setMaxInactiveInterval(SESSION_TIMEOUT_IN_SECONDS);
-        }
-    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
