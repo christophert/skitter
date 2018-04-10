@@ -24,3 +24,11 @@ services:
         build: web
     webb:
         build: web
+    skitdb:
+        build: elasticsearch
+    skitcreate:
+        build: skit-create
+        ports:
+            - 81:81
+        depends_on: 
+            - skitdb
