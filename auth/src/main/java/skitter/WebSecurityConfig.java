@@ -35,9 +35,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .url("ldaps://ldap.rit.edu:636/dc=rit,dc=edu");
     }
 
-//    @Bean
-//    public DefaultSpringSecurityContextSource contextSource() {
-//        return  new DefaultSpringSecurityContextSource(
-//                Collections.singletonList("ldaps://ldap.rit.edu:636"), "dc=memorynotfound,dc=com");
-//    }
 }
