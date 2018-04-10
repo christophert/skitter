@@ -24,6 +24,8 @@
   "homepage": "https://github.com/christophert/skitter#readme",
   "dependencies": {
     "elasticsearch": "^14.2.2",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "express-sanitizer": "^1.0.3",
+    "x-xss-protection": "^1.1.0"
   }
 }

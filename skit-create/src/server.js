@@ -7,19 +7,42 @@ function main() {
     let express    = require('express');
     let app        = express();
     let bodyParser = require('body-parser');
-    let controller = 
+    let expressSanitizer = require('express-sanitizer');
+    let xssFilter = require('x-xss-protection');
+
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
+    app.use(expressSanitizer());
+    app.use(xssFilter());
+    //configure elasticsearch client
+    let elasticsearch = require('elasticsearch');
+    let elasticclient = new elasticsearch.Client({
+        host: 'skitdb:9200',
+        log: 'trace'
+    });
 
-    let port = process.env.PORT || 81;
-    let router = express.Router();
+    //gaurentee we have a connection to the server before continuing
+    client.ping({
+      requestTimeout: 5000
+    }, function (error) {
+      if (error) {
+        throw new Error("Elasticsearch cluster is down");
+      }
+    }).then(() => {
+        let port = process.env.PORT || 81;
+        let router = express.Router();
+        // Service instantiation
+        let skitService = require('./api/skit_service.js')
+            .SkitService(elasticclient);
 
-    // All routes go here
-    let routes = require('./api/skit_controller.js').SkitController(router);
-    routes.forEach((route) => { app.use(route, router); });
+        // All routes go here
+        let routes = require('./api/skit_controller.js')
+            .SkitController(router, skitService);
+        routes.forEach((route) => { app.use(route, router); });
 
-    app.listen(port);
-    console.log('Listening on port:' + port);
+        app.listen(port);
+        console.log('Listening on port:' + port);
+    });
 }
  
 main();
