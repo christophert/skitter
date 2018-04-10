@@ -32,3 +32,5 @@ services:
             MYSQL_USER: skitter_overlord
             MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
             MYSQL_ROOT_PASSWORD: "included because docker said so"
+    ca:
+        build: app_ca

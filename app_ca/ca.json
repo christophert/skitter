@@ -1,0 +1,7 @@
+{
+    "key": {
+        "algo": "rsa",
+        "size": 4096
+    },
+    "CN": "Skitter App CA"
+}
