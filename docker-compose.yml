@@ -38,4 +38,7 @@ services:
             - 8080:8080
         depends_on:
             - db
-        command: dockerize -wait http://db:3306 go auth -v 
+            - ca
+        command: dockerize -wait http://db:3306 -wait http://ca:8888 go auth -v 
+    ca:
+        build: app_ca
