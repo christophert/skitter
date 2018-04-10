@@ -19,6 +19,7 @@ script:
   - docker ps | grep -q skitter_haproxy_1
   - docker ps | grep -q skitter_cachea_1
   - docker ps | grep -q skitter_cacheb_1
+  - docker ps | grep -q skitter_ca_1
 
 after_script:
   - docker-compose down

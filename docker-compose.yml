@@ -24,3 +24,5 @@ services:
         build: web
     webb:
         build: web
+    ca:
+        build: app_ca
