@@ -1,7 +1,9 @@
 FROM cfssl/cfssl:latest
 
-RUN cfssl print-defaults config > ca-config.json && cfssl print-defaults csr > ca-csr.json \  
-&& cfssl genkey -initca ca-csr.json | cfssljson -bare ca
+COPY ca.json /etc/cfssl
+COPY config.json /etc/cfssl
+
+RUN cfssl genkey -initca /etc/cfssl/ca.json | cfssljson -bare ca
 
 EXPOSE 8888
 
