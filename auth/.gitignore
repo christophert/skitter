@@ -50,3 +50,4 @@ fabric.properties
 .idea/httpRequests
 
 target/
+**/keystore.p12
