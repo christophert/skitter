@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").fullyAuthenticated()
                 .antMatchers("/account").fullyAuthenticated()
             .and()
-            .httpBasic();
+            .formLogin();
     }
 
     @Override
