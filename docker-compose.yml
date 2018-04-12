@@ -24,3 +24,21 @@ services:
         build: web
     webb:
         build: web
+    db:
+        build: mysql
+        restart: always
+        environment:
+            MYSQL_DATABASE: skitter
+            MYSQL_USER: skitter_overlord
+            MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
+            MYSQL_ROOT_PASSWORD: "included because docker said so"
+    authentication:
+        build: auth
+        ports:
+            - 8080:8080
+        depends_on:
+            - db
+            - ca
+        command: dockerize -wait http://db:3306 -wait http://ca:8888
+    ca:
+        build: app_ca
