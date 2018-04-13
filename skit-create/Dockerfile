@@ -5,11 +5,10 @@ MAINTAINER Christopher Tran <ctt1414>
 
 WORKDIR /usr/src/app
 
-COPY ./package.json package.json
-COPY ./src ./src
+COPY ./ ./
 
-RUN npm install --only=production
+RUN npm i
 
 EXPOSE 81
-CMD [ "npm", "start" ]
 
+ENTRYPOINT ["/bin/bash","build.sh"]

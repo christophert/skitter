@@ -38,4 +38,4 @@ ENV PATH=$PATH:/usr/share/elasticsearch/bin
 
 CMD ["elasticsearch"]
 
-EXPOSE 9200 9300
+EXPOSE 9200 9200

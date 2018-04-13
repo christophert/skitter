@@ -33,6 +33,8 @@ services:
             - 81:81
         depends_on: 
             - skitdb
+            - ca
+        command: dockerize -wait http://skitdb:9200 -wait http://ca:8888
     # Activity 4
     db:
         build: mysql

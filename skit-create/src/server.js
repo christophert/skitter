@@ -9,6 +9,12 @@ function main() {
     let bodyParser = require('body-parser');
     let expressSanitizer = require('express-sanitizer');
     let xssFilter = require('x-xss-protection');
+    let https = require('https');
+    let fs = require('fs');
+    let serverOptions = {
+        key  : fs.readFileSync('certificate.key'),
+        cert : fs.readFileSync('certificate.crt')
+    };
 
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
@@ -22,13 +28,13 @@ function main() {
     });
 
     //gaurentee we have a connection to the server before continuing
-    client.ping({
-      requestTimeout: 5000
-    }, function (error) {
-      if (error) {
-        throw new Error("Elasticsearch cluster is down");
-      }
-    }).then(() => {
+    //client.ping({
+    //  requestTimeout: 5000
+    //}, function (error) {
+    //  if (error) {
+    //    throw new Error("Elasticsearch cluster is down");
+    //  }
+    //}).then(() => {
         let port = process.env.PORT || 81;
         let router = express.Router();
         // Service instantiation
@@ -40,9 +46,10 @@ function main() {
             .SkitController(router, skitService);
         routes.forEach((route) => { app.use(route, router); });
 
-        app.listen(port);
-        console.log('Listening on port:' + port);
-    });
+        https.createServer(serverOptions, app).listen(port, function() {
+            console.log('Listening on port:' + port);
+        });
+    //});
 }
  
 main();

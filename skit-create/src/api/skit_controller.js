@@ -7,7 +7,9 @@ module.exports.SkitController = function SkitController(router) {
      router.get('/AddSkit', function(req, res) {
 
      });
-     router.get('/RemoveSkit'
+     router.get('/RemoveSkit', function(req, res) {
+
+     });
      //return a list of 
-     return ['/', '/RemoveSkit'];
+     return ['/', '/RemoveSkit', '/AddSkit'];
 };
