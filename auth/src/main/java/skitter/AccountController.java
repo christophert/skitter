@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -105,8 +106,16 @@ public class AccountController {
      * @return string
      */
     @RequestMapping("/")
-    public String home() {
-        return "You made it!";
+    public Session home() {
+        return new Session(accountModel.isAuthenticated(),
+                RequestContextHolder.currentRequestAttributes().getSessionId());
+    }
+
+
+    @RequestMapping(value = "/login",  method = RequestMethod.POST)
+    public Session login() {
+        return new Session(accountModel.isAuthenticated(),
+                RequestContextHolder.currentRequestAttributes().getSessionId());
     }
 
     public static void main(String[] args) {
