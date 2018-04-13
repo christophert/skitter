@@ -6,11 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.InterceptingClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootApplication
@@ -100,8 +106,16 @@ public class AccountController {
      * @return string
      */
     @RequestMapping("/")
-    public String home() {
-        return "You made it!";
+    public Session home() {
+        return new Session(accountModel.isAuthenticated(),
+                RequestContextHolder.currentRequestAttributes().getSessionId());
+    }
+
+
+    @RequestMapping(value = "/login",  method = RequestMethod.POST)
+    public Session login() {
+        return new Session(accountModel.isAuthenticated(),
+                RequestContextHolder.currentRequestAttributes().getSessionId());
     }
 
     public static void main(String[] args) {
