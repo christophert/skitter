@@ -8,9 +8,10 @@ RUN apk update && \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY default.conf /etc/nginx/conf.d/default.conf
+COPY run.sh /
 
-COPY www /usr/share/nginx/html
+COPY skitterapp/dist /usr/share/nginx/html
 
 EXPOSE 80
 
-ENTRYPOINT ["/usr/sbin/nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/run.sh"]
