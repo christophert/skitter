@@ -10,15 +10,21 @@ services:
             - cacheb
     cachea:
         build: cache
+        environment:
+            SSL_HOSTNAME: cachea
         links:
             - "weba:web"
         depends_on:
+            - ca
             - weba
     cacheb:
         build: cache
+        environment:
+            SSL_HOSTNAME: cacheb
         links:
             - "webb:web"
         depends_on:
+            - ca
             - webb
     weba:
         build: web
