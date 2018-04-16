@@ -1,2 +1,7 @@
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
+shield:
+  http.ssl: true
+  ssl:
+    keystore.path: /ssl/keystore.jks
+    keystore.password: a2nother_secure_Connecti0n
