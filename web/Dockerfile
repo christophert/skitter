@@ -2,8 +2,10 @@ FROM node:carbon
 
 WORKDIR /usr/src/app
 COPY skitterapp/build ./build
-COPY build.sh /
-COPY csr.json /
+COPY skitterapp/server.js ./
+COPY package.json ./
+COPY build.sh ./
+COPY csr.json ./
 
 EXPOSE 80
 
