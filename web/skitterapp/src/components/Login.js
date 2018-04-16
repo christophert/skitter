@@ -1,27 +1,47 @@
 import React, { Component } from 'react';
 
 class Login extends Component {
-  render() {
-    return (
-            <div>
-    <form class="form-signin">
-        <h1 class="h3 mb-3 font-weight-bold">login</h1>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="text" id="username" class="form-control" placeholder="Username" required autofocus> </input>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Password" required> </input>
-        <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> Remember me </input>
-        </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block bg-purple" type="submit">Log in</button>
-        <hr />
-        <p>New to skittr? <a href="/register">Sign up now</a></p>
-    </form>
-    </div>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = { username: '', password: '' };
+    }
+
+    handleChange(propertyName, event) {
+        let currentState = this.state;
+        currentState[propertyName] = event.target.value;
+        this.setState(currentState);
+    }
+
+    handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.username + " " + this.state.password);
+        event.preventDefault();
+    }
+
+      render() {
+        return (
+                <div>
+                    <form onSubmit={this.handleSubmit.bind(this)}>
+                        <label>
+                            Username: 
+                            <input type="text" 
+                                   value={this.state.username} 
+                                   onChange={this.handleChange.bind(this, 'username')} 
+                            />
+                        </label>
+                        <br/>
+                        <label>
+                            Password: 
+                            <input type="password" 
+                                   value={this.state.password} 
+                                   onChange={this.handleChange.bind(this, 'password')} 
+                            />
+                        </label>
+                        <br/>
+                        <input type="submit" value="Submit" />
+                    </form>
+                </div>
+        );
+    }
 }
 
 export default Login;
