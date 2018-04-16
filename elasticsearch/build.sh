@@ -35,19 +35,23 @@ cat ca.crt >> certificate.crt
 
 # export as pkcs12
 openssl pkcs12 -export -name elasticsearchssl -in certificate.crt \
-    -inkey certificate.key -out /ssl/keystore.p12 \
+    -inkey certificate.key -out /usr/share/elasticsearch/elasticsearch-5.2.2/config/keystore.p12 \
     -password pass:$KEYSTORE_PASSWORD
 
+
 # make a keystore for our application and store it in the correct folder
-keytool -importkeystore -destkeystore /ssl/keystore.jks \
-    -srckeystore /ssl/keystore.p12 -srcstoretype pkcs12 \
+keytool -importkeystore -destkeystore /usr/share/elasticsearch/elasticsearch-5.2.2/config/keystore.jks \
+    -srckeystore /usr/share/elasticsearch/elasticsearch-5.2.2/config/keystore.p12 -srcstoretype pkcs12 \
     -alias elasticsearchssl -keypass $KEYSTORE_PASSWORD \
     -storepass $KEYSTORE_PASSWORD -srckeypass $KEYSTORE_PASSWORD \
     -destkeypass $KEYSTORE_PASSWORD < private-pass
 
+cp certificate.key /usr/share/elasticsearch/elasticsearch-5.2.2/config/certificate.key
+cp certificate.crt /usr/share/elasticsearch/elasticsearch-5.2.2/config/certificate.crt
+cp ca.crt /usr/share/elasticsearch/elasticsearch-5.2.2/config/ca.crt
 # clean unessessary files
-rm ca.json full_cert.json ca.crt certificate.crt certificate.key 
-
+chmod -R 777 ./
 # run elasticsearch
-elasticsearch
+chown -R elastic:elastic ./
+sudo -H -u elastic /bin/bash -c /usr/share/elasticsearch/elasticsearch-5.2.2/bin/elasticsearch
 

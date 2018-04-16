@@ -1,47 +1,35 @@
 # https://www.elastic.co/blog/how-to-make-a-dockerfile-for-elasticsearch
-FROM ubuntu:14.04
+FROM mcpayment/ubuntu1404-java8
 
 MAINTAINER Joseph Bartelmo <jfb3657>
 MAINTAINER Christopher Tran <ctt1414>
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y --no-install-recommends software-properties-common && add-apt-repository -y ppa:webupd8team/java && \
-    apt-get update && \
-    (echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections) && \
-    apt-get install --no-install-recommends -y oracle-java8-installer && \
-    rm -rf /var/cache/oracle-jdk8-installer && \
-    echo "networkaddress.cache.ttl=60" >> /usr/lib/jvm/java-8-oracle/jre/lib/security/java.security && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-
-RUN groupadd -g 1000 elasticsearch && useradd elasticsearch -u 1000 -g 1000
-#RUN echo elasticsearch:somepass0 | chpasswd
-
-# apt-key adv --keyserver pgp.mit.edu --recv-keys 46095ACC8548582C1A2699A9D27D666CD88E42B4 && \
-RUN add-apt-repository -y "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" --keyserver https://pgp.mit.edu/ && \
-    apt-get update && \
-    apt-get install -y --force-yes --no-install-recommends elasticsearch
-
 WORKDIR /usr/share/elasticsearch
 
-RUN set -ex && for path in data logs config config/scripts; do \
-        mkdir -p "$path"; \
-        chown -R elasticsearch:elasticsearch "$path"; \
-    done
 
-COPY logging.yml /usr/share/elasticsearch/config/
-COPY elasticsearch.yml /usr/share/elasticsearch/config/
+RUN apt-get update && apt-get install curl -y
+#RUN apt-get update && apt-get upgrade -y
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.2.2.tar.gz
+RUN tar -xf elasticsearch-5.2.2.tar.gz
 
-ENV PATH=$PATH:/usr/share/elasticsearch/bin
+COPY elasticsearch.yml /usr/share/elasticsearch/elasticsearch-5.2.2/config/
+ENV PATH=$PATH:/usr/share/elasticsearch/elasticsearch-5.2.2/bin
+EXPOSE 9300 9300
 
-EXPOSE 9200 9200
+#install shield for SSL
+RUN yes | elasticsearch-plugin install x-pack
+#RUN \
+#  mv /usr/share/elasticsearch/elasticsearch-5.2.2/plugins/x-pack /usr/share/elasticsearch/elasticsearch-5.2.2/plugins/.removing-x-pack && \
+#  mv /usr/share/elasticsearch/elasticsearch-5.2.2/plugins/.removing-x-pack /usr/share/elasticsearch/elasticsearch-5.2.2/plugins/x-pack && \
+#  /usr/share/elasticsearch/elasticsearch-5.2.2/bin/elasticsearch-plugin remove x-pack
 
-RUN apt-get install curl -y
 RUN chmod -R 777 ./
 RUN mkdir /ssl
 RUN chmod -R 777 /ssl
 COPY ./ ./
 
-USER elasticsearch
+#elastic user
+RUN groupadd -g 1000 elastic && useradd elastic -u 1000 -g 1000
+#ENTRYPOINT ["/bin/bash"]
+#ENTRYPOINT ["elasticsearch"]
 ENTRYPOINT ["/bin/bash","build.sh"]

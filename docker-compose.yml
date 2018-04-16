@@ -27,6 +27,8 @@ services:
     # Activity 7
     skitdb:
         build: elasticsearch
+        ports:
+            - 9300:9300
     skitcreate:
         build: skit-create
         ports:
