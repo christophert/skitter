@@ -13,22 +13,32 @@ services:
         environment:
             SSL_HOSTNAME: cachea
         links:
-            - "weba:web"
+            - "proxya:web"
         depends_on:
             - ca
-            - weba
+            - proxya
     cacheb:
         build: cache
         environment:
             SSL_HOSTNAME: cacheb
         links:
-            - "webb:web"
+            - "proxyb:web"
         depends_on:
             - ca
-            - webb
-    weba:
-        build: web
-    webb:
+            - proxyb
+    proxya:
+        build: proxy
+        environment:
+            SSL_HOSTNAME: proxya
+        depends_on:
+            - pweb
+    proxyb:
+        build: proxy
+        environment:
+            SSL_HOSTNAME: proxyb 
+        depends_on:
+            - pweb
+    pweb:
         build: web
     db:
         build: mysql
