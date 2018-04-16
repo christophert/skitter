@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+let cssLoaded = false;
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -13,33 +14,33 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.username + " " + this.state.password);
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: this.state.username,
+                password: this.state.password
+            })
+        });
         event.preventDefault();
     }
 
       render() {
+        if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
         return (
-                <div>
-                    <form onSubmit={this.handleSubmit.bind(this)}>
-                        <label>
-                            Username: 
-                            <input type="text" 
-                                   value={this.state.username} 
-                                   onChange={this.handleChange.bind(this, 'username')} 
-                            />
-                        </label>
-                        <br/>
-                        <label>
-                            Password: 
-                            <input type="password" 
-                                   value={this.state.password} 
-                                   onChange={this.handleChange.bind(this, 'password')} 
-                            />
-                        </label>
-                        <br/>
-                        <input type="submit" value="Submit" />
-                    </form>
-                </div>
+            <form className="form-signin" onSubmit={this.handleSubmit.bind(this)}>
+                <h1 className="mb-3 font-weight-bold color-purple">login</h1>
+                <label htmlFor="inputUser" className="sr-only">Username</label>
+                <input type="text" id="username" name="username" className="form-control" placeholder="Username" value={this.state.username} onChange={this.handleChange.bind(this, 'username')} required autoFocus/>
+                <label htmlFor="inputPassword" className="sr-only">Password</label>
+                <input type="password" id="password" name="password" className="form-control" placeholder="Password" onChange={this.handleChange.bind(this, 'password')} required/>
+                <button className="btn btn-lg btn-primary btn-block bg-purple" type="submit">Log in</button>
+                <hr />
+                <p>New to skittr? <a href="/register">Sign up now</a></p>
+            </form>
         );
     }
 }
