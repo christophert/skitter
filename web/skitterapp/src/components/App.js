@@ -7,7 +7,7 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-        <Header />
+            "Render body information here"
     );
   }
 }
