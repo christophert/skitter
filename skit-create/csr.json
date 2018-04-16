@@ -1,8 +1,9 @@
 {
-	"hostname": "auth.skitter.app",
+	"hostname": "kibana.skitter.app",
 	"request": {
 		"hosts": [
-			"auth.skitter.app"
+			"kibana.skitter.app",
+            "kibana"
 		],
 		"key": {
 			"algo": "rsa",
@@ -14,7 +15,7 @@
 				"L": "San Francisco",
 				"O": "Skitter",
 				"ST": "California",
-                "CN": "auth.skitter.app"
+                "CN": "kibana.skitter.app"
 			}
 		]
 	}
