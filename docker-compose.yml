@@ -27,6 +27,16 @@ services:
     # Activity 7
     skitdb:
         build: elasticsearch
+        environment:
+            ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+            CERTS_DIR: $CERTS_DIR
+            xpack.security.http.ssl.enabled: "true"
+            xpack.security.transport.ssl.enabled: "true"
+            xpack.security.transport.ssl.verification_mode: none
+            xpack.ssl.certificate_authorities: $CERTS_DIR/ca.crt
+            xpack.ssl.certificate: $CERTS_DIR/certificate.crt
+            xpack.ssl.key: $CERTS_DIR/certificate.key
+
         ports:
             - 9300:9300
     skitcreate:

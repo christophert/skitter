@@ -1,14 +1,2 @@
 cluster.name: "docker-cluster"
 network.host: 0.0.0.0
-
-#xpack.ssl.key: "certificate.key"
-#xpack.ssl.certificate: "certificate.crt"
-#xpack.ssl.certificate_authorities: [ "/usr/share/elasticsearch/elasticsearch-5.2.2/config/ca.crt" ]
-
-xpack.ssl.keystore.path: "keystore.jks"
-xpack.ssl.verification_mode: none
-xpack.ssl.keystore.password: "a2nother_secure_Connecti0n"
-#xpack.signing.keystore.alias: "elasticsearchssl"
-xpack.security.transport.ssl.enabled: true
-#xpack.security.http.ssl.enabled: true
-
