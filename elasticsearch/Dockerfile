@@ -16,7 +16,7 @@ RUN apt-get install -y --no-install-recommends software-properties-common && add
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 RUN groupadd -g 1000 elasticsearch && useradd elasticsearch -u 1000 -g 1000
-RUN echo elasticsearch:somepass0 | chpasswd
+#RUN echo elasticsearch:somepass0 | chpasswd
 
 # apt-key adv --keyserver pgp.mit.edu --recv-keys 46095ACC8548582C1A2699A9D27D666CD88E42B4 && \
 RUN add-apt-repository -y "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" --keyserver https://pgp.mit.edu/ && \
@@ -43,4 +43,5 @@ RUN mkdir /ssl
 RUN chmod -R 777 /ssl
 COPY ./ ./
 
+USER elasticsearch
 ENTRYPOINT ["/bin/bash","build.sh"]

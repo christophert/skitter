@@ -48,7 +48,6 @@ keytool -importkeystore -destkeystore /ssl/keystore.jks \
 # clean unessessary files
 rm ca.json full_cert.json ca.crt certificate.crt certificate.key 
 
-login elasticsearch
 # run elasticsearch
 elasticsearch
 
