@@ -1,5 +1,5 @@
 #!/bin/bash
-SSL_HOSTNAME = "${SSL_HOSTNAME:-cache}"
+SSL_HOSTNAME="${SSL_HOSTNAME:-cache}"
 
 # get CA Certificate
 curl -XPOST -H "Content-Type: application/json" -d '{"label": "primary"}' http://ca:8888/api/v1/cfssl/info > ca.json
