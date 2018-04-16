@@ -1,0 +1,28 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "Web interface for Skitter",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christophert/skitter.git"
+  },
+  "keywords": [
+    "skitter"
+  ],
+  "author": "Christopher Tran",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/christophert/skitter/issues"
+  },
+  "homepage": "https://github.com/christophert/skitter#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-sanitizer": "^1.0.3",
+    "x-xss-protection": "^1.1.0"
+  }
+}
