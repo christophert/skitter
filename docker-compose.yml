@@ -5,6 +5,7 @@ services:
         ports:
             - 1936:1936
             - 80:80
+            - 443:443
         depends_on:
             - cachea
             - cacheb
@@ -32,12 +33,14 @@ services:
             SSL_HOSTNAME: proxya
         depends_on:
             - pweb
+            - authentication
     proxyb:
         build: proxy
         environment:
             SSL_HOSTNAME: proxyb 
         depends_on:
             - pweb
+            - authentication
     pweb:
         build: web
     db:
