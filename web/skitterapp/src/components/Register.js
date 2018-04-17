@@ -15,7 +15,7 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
-        fetch('/register', {
+        fetch('/auth/register', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
