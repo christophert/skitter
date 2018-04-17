@@ -3,13 +3,46 @@ import { instanceOf } from 'prop-types';
 import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
 
 let cssLoaded = false;
+
+class LoginAlert extends Component {
+    constructor(props) {
+        super(props);
+    }
+}
+
 class Login extends Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
     };
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '' };
+        this.state = { username: '', password: '', isAuthenticated: false, isLoading: false, hasAuthenticationFailed: false, retData: []};
+    }
+
+    isAuthenticated() {
+        fetch('/auth/isAuthenticated', {
+            method: 'GET',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+            .then(function(response) {
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("is not authenticated");
+                }
+            })
+            .then(function(response) {
+                console.log(response.json());
+            })
+            .catch(error => this.setState({isAuthenticated: false}));
+    }
+
+    componentDidMount() {
+        //this.setState({isAuthenticated: false, hasAuthenticationFailed: false});
+        this.isAuthenticated();
     }
 
     handleChange(propertyName, event) {
@@ -19,6 +52,7 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
+        this.setState({isLoading: true, isAuthenticated: false, hasAuthenticationFailed: false});
         const { cookies } = this.props;
         let data = new URLSearchParams();
         data.append("username", this.state.username);
@@ -33,32 +67,39 @@ class Login extends Component {
             },
             body: data
         })
-            .then(function(response) {
-                console.log(response.json());
-            });
+            .then(response => {
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Response is not ok");
+                }
+            })
+            .then(data => this.setState({retData: data, isLoading: false, isAuthenticated: true}))
+            .catch(error => this.setState({error, isLoading: false, hasAuthenticationFailed: true}));
         event.preventDefault();
     }
 
-    initCSRF() {
-        fetch('/auth/isAuthenticated', {
-            method: 'GET',
-            credentials: "include",
-            headers: {
-                'Accept': 'application/json',
-            }
-        })
-            .then(function(response) {
-                console.log(response.json());
-            });
-    }
+
 
 
       render() {
-        if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); this.initCSRF(); }
+        if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
+        const { isLoading, isAuthenticated, hasAuthenticationFailed } = this.state;
+
+        let inalert = "";
+        if(isLoading) {
+            inalert = <div className="alert alert-info">Loading...</div>;
+        } else if (!isLoading && isAuthenticated && !hasAuthenticationFailed) {
+            inalert = <div className="alert alert-success">Login success</div>;
+        } else if (!isLoading && !isAuthenticated && hasAuthenticationFailed) {
+            inalert = <div className="alert alert-danger">Authentication failed</div>;
+        }
+
         return (
             <CookiesProvider>
             <form className="form-signin" onSubmit={this.handleSubmit.bind(this)}>
                 <h1 className="mb-3 font-weight-bold color-purple">login</h1>
+                {inalert}
                 <label htmlFor="inputUser" className="sr-only">Username</label>
                 <input type="text" id="username" name="username" className="form-control" placeholder="Username" value={this.state.username} onChange={this.handleChange.bind(this, 'username')} required autoFocus/>
                 <label htmlFor="inputPassword" className="sr-only">Password</label>
