@@ -50,7 +50,7 @@ openssl pkcs12 -export -name tomcat -in certificate.crt \
 rm ca.json full_cert.json ca.crt certificate.crt certificate.key 
 
 # compile
-mvn clean install
+mvn clean install -q
 
 # run built spring environment1
 java -Djava.security.egd=file:/dev/./urandom -jar \
