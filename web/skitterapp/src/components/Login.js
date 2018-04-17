@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
+import { instanceOf } from 'prop-types';
+import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
 
 let cssLoaded = false;
 class Login extends Component {
+    static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+    };
     constructor(props) {
         super(props);
         this.state = { username: '', password: '' };
@@ -14,6 +19,7 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
+        const { cookies } = this.props;
         fetch('/auth/login', {
             method: 'POST',
             headers: {
@@ -22,7 +28,8 @@ class Login extends Component {
             },
             body: JSON.stringify({
                 username: this.state.username,
-                password: this.state.password
+                password: this.state.password,
+                '_csrf': cookies.get('XSRF-TOKEN')
             })
         });
         event.preventDefault();
@@ -31,6 +38,7 @@ class Login extends Component {
       render() {
         if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
         return (
+            <CookiesProvider>
             <form className="form-signin" onSubmit={this.handleSubmit.bind(this)}>
                 <h1 className="mb-3 font-weight-bold color-purple">login</h1>
                 <label htmlFor="inputUser" className="sr-only">Username</label>
@@ -41,8 +49,9 @@ class Login extends Component {
                 <hr />
                 <p>New to skittr? <a href="/register">Sign up now</a></p>
             </form>
+            </CookiesProvider>
         );
     }
 }
 
-export default Login;
+export default withCookies(Login);
