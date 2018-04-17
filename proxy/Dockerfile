@@ -4,7 +4,7 @@ FROM alpine:latest
 RUN apk update && \
     apk upgrade && \
     apk add --update openssl nginx && \
-    apk add --update tzdata grep curl
+    apk add --update tzdata grep curl bash
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY default.conf /etc/nginx/conf.d/default.conf
