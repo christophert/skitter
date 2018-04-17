@@ -23,6 +23,7 @@ import java.util.Optional;
 //@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 @EnableJpaRepositories
 @RestController
+@RequestMapping("/auth")
 public class AccountController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 

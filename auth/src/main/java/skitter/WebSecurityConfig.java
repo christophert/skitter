@@ -10,11 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 @EnableWebSecurity
 @Configuration
@@ -24,12 +27,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()//.disable()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .requireCsrfProtectionMatcher(new RequestMatcher() {
+//                    private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+//                    private RegexRequestMatcher apiMatcher = new RegexRequestMatcher("/v[0-9]*/.*", null);
+//
+//                    @Override
+//                    public boolean matches(HttpServletRequest request) {
+//                        // No CSRF due to allowedMethod
+//                        if(allowedMethods.matcher(request.getMethod()).matches())
+//                            return false;
+//
+//                        // No CSRF due to api call
+//                        if(apiMatcher.matches(request))
+//                            return false;
+//
+//                        // CSRF for everything else that is not an API call or an allowedMethod
+//                        return true;
+//                    }
+//                })
                 .and()
                 .authorizeRequests()
-                .antMatchers("/register").fullyAuthenticated()
-                .antMatchers("/account").fullyAuthenticated()
+                .antMatchers("/auth/register").fullyAuthenticated()
+                .antMatchers("/auth/account").fullyAuthenticated()
             .and()
-            .formLogin().successHandler(new AuthenticationSuccessHandler() {
+            .formLogin()
+                .loginPage("/auth/login")
+                .successHandler(new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request,
                                                 HttpServletResponse response,
