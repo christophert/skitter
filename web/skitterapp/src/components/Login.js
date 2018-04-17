@@ -20,23 +20,41 @@ class Login extends Component {
 
     handleSubmit(event) {
         const { cookies } = this.props;
+        let data = new URLSearchParams();
+        data.append("username", this.state.username);
+        data.append("password", this.state.password);
+
         fetch('/auth/login', {
             method: 'POST',
+            credentials: "include",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
             },
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password,
-                '_csrf': cookies.get('XSRF-TOKEN')
-            })
-        });
+            body: data
+        })
+            .then(function(response) {
+                console.log(response.json());
+            });
         event.preventDefault();
     }
 
+    initCSRF() {
+        fetch('/auth/isAuthenticated', {
+            method: 'GET',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+            .then(function(response) {
+                console.log(response.json());
+            });
+    }
+
+
       render() {
-        if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
+        if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); this.initCSRF(); }
         return (
             <CookiesProvider>
             <form className="form-signin" onSubmit={this.handleSubmit.bind(this)}>

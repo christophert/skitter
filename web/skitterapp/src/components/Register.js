@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { instanceOf } from 'prop-types';
+import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
 
 let cssLoaded = false;
-class Login extends Component {
+class Register extends Component {
+    static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+    };
     constructor(props) {
         super(props);
         this.state = { email: '', firstName: '', lastName: '' };
@@ -15,11 +20,14 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
+        const { cookies } = this.props;
         fetch('/auth/register', {
             method: 'POST',
+            credentials: "include",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
             },
             body: JSON.stringify({
                 email: this.state.email,
@@ -30,9 +38,20 @@ class Login extends Component {
         event.preventDefault();
     }
 
+    initCSRF() {
+        fetch('/auth/isAuthenticated', {
+            method: 'GET',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+    }
+
       render() {
-        if(cssLoaded === false) { cssLoaded = true; import ('./Register.css'); }
+        if(cssLoaded === false) { cssLoaded = true; import ('./Register.css'); this.initCSRF(); }
         return (
+            <CookiesProvider>
             <form className="form-register" onSubmit={this.handleSubmit.bind(this)}>
                 <h1 className="mb-3 font-weight-bold color-purple">register</h1>
                 <label htmlFor="inputEmail" className="sr-only">Email Address</label>
@@ -45,8 +64,9 @@ class Login extends Component {
                 <hr />
                 <p>Already have an account? <Link to="/login">Login now</Link></p>
             </form>
+            </CookiesProvider>
         );
     }
 }
 
-export default Login;
+export default withCookies(Register);
