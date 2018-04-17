@@ -1,0 +1,22 @@
+{
+	"hostname": "skitter.app",
+	"request": {
+		"hosts": [
+			"skitter.app",
+            "skitter"
+		],
+		"key": {
+			"algo": "rsa",
+			"size": 2048
+		},
+		"names": [
+			{
+				"C": "US",
+				"L": "San Francisco",
+				"O": "Skitter",
+                "OU": "Apex",
+				"ST": "California"
+			}
+		]
+	}
+}
