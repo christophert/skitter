@@ -16,7 +16,7 @@ class Login extends Component {
     };
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', isAuthenticated: false, isLoading: false, hasAuthenticationFailed: false, retData: []};
+        this.state = { username: '', password: '', isAuthenticated: false, isLoading: false, hasAttemptedAuthentication: false, retData: []};
     }
 
     isAuthenticated() {
@@ -52,7 +52,7 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
-        this.setState({isLoading: true, isAuthenticated: false, hasAuthenticationFailed: false});
+        this.setState({isLoading: true, isAuthenticated: false});
         const { cookies } = this.props;
         let data = new URLSearchParams();
         data.append("username", this.state.username);
@@ -66,7 +66,7 @@ class Login extends Component {
                 'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
             },
             body: data
-        })
+            })
             .then(response => {
                 if(response.ok) {
                     return response.json();
@@ -74,8 +74,9 @@ class Login extends Component {
                     throw new Error("Response is not ok");
                 }
             })
-            .then(data => this.setState({retData: data, isLoading: false, isAuthenticated: true}))
-            .catch(error => this.setState({error, isLoading: false, hasAuthenticationFailed: true}));
+            .then(resp => this.setState({retData: resp, isLoading: false, isAuthenticated: true, hasAttemptedAuthentication: true}))
+            .catch(error => this.setState({error, isLoading: false, isAuthenticated: false, hasAttemptedAuthentication: true}));
+            console.log(this.state);
         event.preventDefault();
     }
 
@@ -84,14 +85,14 @@ class Login extends Component {
 
       render() {
         if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
-        const { isLoading, isAuthenticated, hasAuthenticationFailed } = this.state;
+        const { isLoading, isAuthenticated, hasAttemptedAuthentication } = this.state;
 
         let inalert = "";
-        if(isLoading) {
+        if(isLoading && !hasAttemptedAuthentication) {
             inalert = <div className="alert alert-info">Loading...</div>;
-        } else if (!isLoading && isAuthenticated && !hasAuthenticationFailed) {
+        } else if (!isLoading && isAuthenticated && hasAttemptedAuthentication) {
             inalert = <div className="alert alert-success">Login success</div>;
-        } else if (!isLoading && !isAuthenticated && hasAuthenticationFailed) {
+        } else if (!isLoading && !isAuthenticated && hasAttemptedAuthentication) {
             inalert = <div className="alert alert-danger">Authentication failed</div>;
         }
 
