@@ -25,7 +25,7 @@ function main() {
     let elasticclient = new elasticsearch.Client({
         host: [
             {
-                host: 'localhost',
+                host: 'skitdb',
                 auth: 'elastic:s00pers3cur3pa$$word',
                 protocol: 'https',
                 port: 9200
@@ -33,36 +33,21 @@ function main() {
         ],
         log: 'trace'
     });
-    elasticclient.cluster.health({},function(err,resp,status) {  
-        if (err) {
-            console.log("-- CLIENT ERROR --", err);
-        } else if(resp) {
-            console.log("-- Client Health --",resp);
-        }
+
+    let port = process.env.PORT || 81;
+    let router = express.Router();
+    // Service instantiation
+    let skitService = require('./api/skit_service.js')
+        .SkitService(elasticclient);
+
+    // All routes go here
+    let routes = require('./api/skit_controller.js')
+        .SkitController(router, skitService);
+    routes.forEach((route) => { app.use(route, router); });
+
+    https.createServer(serverOptions, app).listen(port, function() {
+        console.log('Listening on port:' + port);
     });
-
-    //gaurentee we have a connection to the server before continuing
-    //elasticclient.ping({
-    //  maxRetries: 100
-    //}, function (error) {
-    //    if (error) {
-    //        throw new Error("Elasticsearch cluster is down");
-    //    }
-        let port = process.env.PORT || 81;
-        let router = express.Router();
-        // Service instantiation
-        let skitService = require('./api/skit_service.js')
-            .SkitService(elasticclient);
-
-        // All routes go here
-        let routes = require('./api/skit_controller.js')
-            .SkitController(router, skitService);
-        routes.forEach((route) => { app.use(route, router); });
-
-        https.createServer(serverOptions, app).listen(port, function() {
-            console.log('Listening on port:' + port);
-        });
-   // });
 }
  
 main();

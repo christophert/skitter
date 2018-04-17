@@ -1,5 +1,6 @@
 #!/bin/bash
 
+while ! curl -s -k -u elastic:s00pers3cur3pa\$\$word https://skitdb:9200 > /dev/null; do echo waiting for elasticsearch; sleep 3; done;
 # get CA Certificate
 curl -XPOST -H "Content-Type: application/json" -d '{"label": "primary"}' http://ca:8888/api/v1/cfssl/info > ca.json
 
