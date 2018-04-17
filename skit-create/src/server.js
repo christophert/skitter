@@ -23,18 +23,31 @@ function main() {
     //configure elasticsearch client
     let elasticsearch = require('elasticsearch');
     let elasticclient = new elasticsearch.Client({
-        host: 'skitdb:9200',
+        host: [
+            {
+                host: 'localhost',
+                auth: 'elastic:s00pers3cur3pa$$word',
+                protocol: 'https',
+                port: 9200
+            }
+        ],
         log: 'trace'
+    });
+    elasticclient.cluster.health({},function(err,resp,status) {  
+        if (err) {
+            console.log("-- CLIENT ERROR --", err);
+        } else if(resp) {
+            console.log("-- Client Health --",resp);
+        }
     });
 
     //gaurentee we have a connection to the server before continuing
-    //client.ping({
-    //  requestTimeout: 5000
+    //elasticclient.ping({
+    //  maxRetries: 100
     //}, function (error) {
-    //  if (error) {
-    //    throw new Error("Elasticsearch cluster is down");
-    //  }
-    //}).then(() => {
+    //    if (error) {
+    //        throw new Error("Elasticsearch cluster is down");
+    //    }
         let port = process.env.PORT || 81;
         let router = express.Router();
         // Service instantiation
@@ -49,7 +62,7 @@ function main() {
         https.createServer(serverOptions, app).listen(port, function() {
             console.log('Listening on port:' + port);
         });
-    //});
+   // });
 }
  
 main();

@@ -36,9 +36,10 @@ services:
             xpack.ssl.certificate_authorities: $CERTS_DIR/ca.crt
             xpack.ssl.certificate: $CERTS_DIR/certificate.crt
             xpack.ssl.key: $CERTS_DIR/certificate.key
-
         ports:
+            - 9200:9200
             - 9300:9300
+        command: dockerize -wait http://ca:8888
     skitcreate:
         build: skit-create
         ports:
@@ -46,7 +47,7 @@ services:
         depends_on: 
             - skitdb
             - ca
-        command: dockerize -wait http://skitdb:9200 -wait http://ca:8888
+        command: dockerize -wait https://skitdb:9200 -wait http://ca:8888
     # Activity 4
     db:
         build: mysql

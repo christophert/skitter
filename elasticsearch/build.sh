@@ -24,5 +24,7 @@ extract_json_data () {
 extract_json_data ca.json certificate $CERTS_DIR/ca.crt
 extract_json_data full_cert.json certificate $CERTS_DIR/certificate.crt
 extract_json_data full_cert.json private_key $CERTS_DIR/certificate.key
+cat $CERTS_DIR/ca.crt
+cat $CERTS_DIR/certificate.crt
 
 /usr/local/bin/docker-entrypoint.sh
