@@ -29,6 +29,7 @@ extract_json_data full_cert.json private_key certificate.key
 cat /etc/ssl/revproxy.pem 
 
 cat ca.crt certificate.key >> /etc/ssl/revproxy.pem
+cat ca.crt > /var/www/ca.crt
 
 # generate dhparam
 openssl dhparam -out /etc/ssl/dhparam.pem 2048
