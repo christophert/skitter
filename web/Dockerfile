@@ -9,4 +9,4 @@ COPY csr.json ./
 
 EXPOSE 80
 
-ENTRYPOINT ["/build.sh"]
+ENTRYPOINT ["./build.sh"]

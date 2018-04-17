@@ -3,6 +3,7 @@
 function main() {
     let express    = require('express');
     let app        = express();
+    let path = require('path');
     let bodyParser = require('body-parser');
     let expressSanitizer = require('express-sanitizer');
     let xssFilter = require('x-xss-protection');
