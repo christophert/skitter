@@ -1,9 +1,11 @@
 {
 	"hostname": "skitter.app",
+    "CN": "skitter.app",
 	"request": {
 		"hosts": [
 			"skitter.app",
-            "skitter"
+            "skitter",
+            "172.19.124.10"
 		],
 		"key": {
 			"algo": "rsa",
