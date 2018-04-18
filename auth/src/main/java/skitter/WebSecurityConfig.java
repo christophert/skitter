@@ -74,7 +74,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                                 Authentication authentication) throws IOException,
                                                                                       ServletException,
                                                                                       SkitterException {
-                accountModel.isAuthenticated();
+                try {
+                    accountModel.isAuthenticated();
+                } catch (SkitterException ex) {
+                    response.sendError(418, ex.getMessage());
+                }
             }
         });
     }
