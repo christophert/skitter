@@ -1,13 +1,22 @@
 package skitter;
 
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +27,9 @@ public class AccountModelImpl implements AccountModel {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     /**
      * Get's information from the SSO Authentication suite included with Spring to verify
@@ -71,22 +83,35 @@ public class AccountModelImpl implements AccountModel {
      * @throws SkitterException Thrown if account already exists or not authenticated
      */
     @Override
-    public Account create(Account account) throws SkitterException {
-        String uid = verifyRitLdapInformation();
-        Optional<Account> acct = accountRepository.findById(uid);
+    public Account create(String username, String password, Account account) throws SkitterException {
+        try {
+            UsernamePasswordAuthenticationToken authReq
+                    = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication auth = authenticationManager.authenticate(authReq);
+            SecurityContext sc = SecurityContextHolder.getContext();
+            sc.setAuthentication(auth);
+
+            if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+                throw new SkitterException("Not a valid LDAP username and password");
+            }
+        } catch (Exception ex) {
+            throw new SkitterException("Not a valid LDAP username and password");
+        }
+
+        Optional<Account> acct = accountRepository.findById(username);
         if (acct.isPresent()) {
             throw new SkitterException("Account already exists in database");
         }
 
-        accountRepository.save(new Account().withUid(uid)
+        accountRepository.save(new Account().withUid(username)
                 .withEmail(account.getEmail())
                 .withFirstName(account.getFirstName())
                 .withLastName(account.getLastName()));
 
-        acct = accountRepository.findById(uid);
+        acct = accountRepository.findById(username);
 
         if (!acct.isPresent()) {
-            throw new SkitterException("This is a valid LDAP Account but does not have a registered Skitter acct");
+            throw new SkitterException("Error on creation of account with username: " + username);
         }
         return acct.get();
     }

@@ -16,7 +16,7 @@ public interface AccountModel {
      * @return Skitter account on successful creation
      * @throws SkitterException Thrown if account already exists or not authenticated
      */
-    Account create(Account account) throws SkitterException;
+    Account create(String username, String password, Account account) throws SkitterException;
 
     /**
      * Get a Specific Account

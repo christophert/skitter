@@ -50,10 +50,13 @@ public class AccountController {
      * @return account on successful registration
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json")
-    public Account register(@RequestParam("email") String email,
+    public Account register(@RequestParam("username") String username,
+                            @RequestParam("password") String password,
+                            @RequestParam("email") String email,
                             @RequestParam("firstName") String firstName,
                             @RequestParam("lastName") String lastName) throws SkitterException {
-        return accountModel.create(new Account()
+        return accountModel.create(username, password,
+                new Account()
                 .withEmail(email)
                 .withFirstName(firstName)
                 .withLastName(lastName));
@@ -108,13 +111,6 @@ public class AccountController {
      */
     @RequestMapping("/")
     public Session home() {
-        return new Session(accountModel.isAuthenticated(),
-                RequestContextHolder.currentRequestAttributes().getSessionId());
-    }
-
-
-    @RequestMapping(value = "/login",  method = RequestMethod.POST)
-    public Session login() {
         return new Session(accountModel.isAuthenticated(),
                 RequestContextHolder.currentRequestAttributes().getSessionId());
     }
