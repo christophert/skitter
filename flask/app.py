@@ -10,7 +10,7 @@ MYSQL = MySQL()
 APP.config['MYSQL_DATABASE_USER'] = 'skitter_overlord'
 APP.config['MYSQL_DATABASE_PASSWORD'] = 'a_GENerIC_p@ssW0rd'
 APP.config['MYSQL_DATABASE_DB'] = 'skitter'
-APP.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
+APP.config['MYSQL_DATABASE_HOST'] = 'db'
 MYSQL.init_app(APP)
 
 def query_db(query, args=(), one=False, stringify=True):
@@ -115,4 +115,4 @@ if __name__ == '__main__':
             INDEX(user_id, following)
         );
     """)
-    APP.run(host='0.0.0.0', port=1337, debug=True)
+    APP.run(host='0.0.0.0', port=1337, debug=False)
