@@ -16,7 +16,12 @@ class Login extends Component {
     };
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', isAuthenticated: false, isLoading: false, hasAttemptedAuthentication: false, retData: []};
+        this.state = { username: '',
+            password: '',
+            isAuthenticated: false,
+            isLoading: false,
+            hasAttemptedAuthentication: false,
+            retData: []};
     }
 
     isAuthenticated() {
@@ -27,17 +32,17 @@ class Login extends Component {
                 'Accept': 'application/json',
             }
         })
-            .then(function(response) {
-                if(response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("is not authenticated");
-                }
-            })
-            .then(function(response) {
-                console.log(response.json());
-            })
-            .catch(error => this.setState({isAuthenticated: false}));
+        .then((response) => {
+            if(response.ok) {
+                return response.json();
+            } else {
+                throw new Error("is not authenticated");
+            }
+        })
+        .then((response) => {
+            console.log(response.json());
+        })
+        .catch((error) => this.setState({isAuthenticated: false}));
     }
 
     componentDidMount() {

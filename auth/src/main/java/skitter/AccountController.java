@@ -9,10 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Collections;
@@ -44,22 +41,16 @@ public class AccountController {
 
     /**
      * Create Account for an RIT LDAP user
-     * @param email email address
-     * @param firstName first name
-     * @param lastName last name
+     * @param registerRequestBody registration request
      * @return account on successful registration
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json")
-    public Account register(@RequestParam("username") String username,
-                            @RequestParam("password") String password,
-                            @RequestParam("email") String email,
-                            @RequestParam("firstName") String firstName,
-                            @RequestParam("lastName") String lastName) throws SkitterException {
-        return accountModel.create(username, password,
+    public Account register(@RequestBody AccountRegisterRequestBody registerRequestBody) throws SkitterException {
+        return accountModel.create(registerRequestBody.getUsername(), registerRequestBody.getPassword(),
                 new Account()
-                .withEmail(email)
-                .withFirstName(firstName)
-                .withLastName(lastName));
+                .withEmail(registerRequestBody.getEmail())
+                .withFirstName(registerRequestBody.getFirstName())
+                .withLastName(registerRequestBody.getLastName()));
     }
 
     /**
