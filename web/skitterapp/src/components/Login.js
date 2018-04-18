@@ -19,9 +19,8 @@ class Login extends Component {
         this.state = { username: '',
             password: '',
             isAuthenticated: false,
-            isLoading: false,
-            hasAttemptedAuthentication: false,
-            retData: []};
+            isLoading: false
+        };
     }
 
     isAuthenticated() {
@@ -34,13 +33,11 @@ class Login extends Component {
         })
         .then((response) => {
             if(response.ok) {
+                this.setState({isAuthenticated: true});
                 return response.json();
             } else {
                 throw new Error("is not authenticated");
             }
-        })
-        .then((response) => {
-            console.log(response.json());
         })
         .catch((error) => this.setState({isAuthenticated: false}));
     }
@@ -73,15 +70,12 @@ class Login extends Component {
             body: data
             })
             .then(response => {
-                if(response.ok) {
-                    return response.json();
-                } else {
+                if(!response.ok) {
                     throw new Error("Response is not ok");
                 }
             })
-            .then(resp => this.setState({retData: resp, isLoading: false, isAuthenticated: true, hasAttemptedAuthentication: true}))
-            .catch(error => this.setState({error, isLoading: false, isAuthenticated: false, hasAttemptedAuthentication: true}));
-            console.log(this.state);
+            .then(() => this.setState({isLoading: false, isAuthenticated: true}))
+            .catch((error) => this.setState({error, isLoading: false, isAuthenticated: false}));
         event.preventDefault();
     }
 
@@ -90,15 +84,12 @@ class Login extends Component {
 
       render() {
         if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
-        const { isLoading, isAuthenticated, hasAttemptedAuthentication } = this.state;
 
         let inalert = "";
-        if(isLoading && !hasAttemptedAuthentication) {
-            inalert = <div className="alert alert-info">Loading...</div>;
-        } else if (!isLoading && isAuthenticated && hasAttemptedAuthentication) {
+        if (this.state.isAuthenticated) {
             inalert = <div className="alert alert-success">Login success</div>;
-        } else if (!isLoading && !isAuthenticated && hasAttemptedAuthentication) {
-            inalert = <div className="alert alert-danger">Authentication failed</div>;
+        } else {
+            inalert = <div className="alert alert-danger">Not Logged in</div>;
         }
 
         return (
