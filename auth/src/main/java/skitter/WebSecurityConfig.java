@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws SkitterUnauthorizedExceptio {
+    protected void configure(HttpSecurity http) throws SkitterUnauthorizedException {
         http.csrf()//.disable()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .requireCsrfProtectionMatcher(new RequestMatcher() {
@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                                                                       SkitterException {
                 try {
                     accountModel.isAuthenticated();
-                } catch (SkitterException ex) {
+                } catch (SkitterUnauthorizedException ex) {
                     response.sendError(401, ex.getMessage());
                 }
             }
