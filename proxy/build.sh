@@ -32,7 +32,7 @@ cat ca.crt certificate.key >> /etc/ssl/revproxy.pem
 cat ca.crt > /var/www/ca.crt
 
 # generate dhparam
-openssl dhparam -out /etc/ssl/dhparam.pem 2048
+openssl dhparam -out /etc/ssl/dhparam.pem 2048 > /dev/null
 
 # clean unessessary files
 rm ca.json full_cert.json ca.crt certificate.key 
