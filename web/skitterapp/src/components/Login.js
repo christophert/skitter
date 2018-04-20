@@ -19,7 +19,8 @@ class Login extends Component {
         this.state = { username: '',
             password: '',
             isAuthenticated: false,
-            isLoading: false
+            isLoading: false,
+            attemptedLogin: false
         };
     }
 
@@ -43,7 +44,6 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        //this.setState({isAuthenticated: false, hasAuthenticationFailed: false});
         this.isAuthenticated();
     }
 
@@ -54,7 +54,7 @@ class Login extends Component {
     }
 
     handleSubmit(event) {
-        this.setState({isLoading: true, isAuthenticated: false});
+        this.setState({isLoading: true, isAuthenticated: false, attemptedLogin: false});
         const { cookies } = this.props;
         let data = new URLSearchParams();
         data.append("username", this.state.username);
@@ -74,8 +74,8 @@ class Login extends Component {
                     throw new Error("Response is not ok");
                 }
             })
-            .then(() => this.setState({isLoading: false, isAuthenticated: true}))
-            .catch((error) => this.setState({error, isLoading: false, isAuthenticated: false}));
+            .then(() => this.setState({isLoading: false, isAuthenticated: true, attemptedLogin: true}))
+            .catch((error) => this.setState({error, isLoading: false, isAuthenticated: false, attemptedLogin: true}));
         event.preventDefault();
     }
 
@@ -86,10 +86,10 @@ class Login extends Component {
         if(cssLoaded === false) { cssLoaded = true; import ('./Login.css'); }
 
         let inalert = "";
-        if (this.state.isAuthenticated) {
+        if (this.state.attemptedLogin && this.state.isAuthenticated) {
             inalert = <div className="alert alert-success">Login success</div>;
-        } else {
-            inalert = <div className="alert alert-danger">Not Logged in</div>;
+        } else if (this.state.attemptedLogin && !this.state.isAuthenticated) {
+            inalert = <div className="alert alert-danger">There was an error logging in. Please try again.</div>;
         }
 
         return (

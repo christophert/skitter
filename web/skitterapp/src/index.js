@@ -6,19 +6,45 @@ import App from './components/App';
 import Header from './components/Header';
 import Login from './components/Login';
 import Register from './components/Register';
+import Dashboard from './components/Dashboard';
+import Settings from './components/Settings';
+import Profile from './components/Profile';
 import registerServiceWorker from './registerServiceWorker';
+
+const authState = {
+    isAuthenticated: false,
+    authenticate(cb) {
+        fetch('/auth/isAuthenticated', {
+            method: 'GET',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then((response) => {
+            if(response.ok) {
+                this.setState({isAuthenticated: true});
+                return response.json();
+            } else {
+                throw new Error("is not authenticated");
+            }
+        })
+        .catch((error) => this.setState({isAuthenticated: false}));
+    }
+}
 
 ReactDOM.render((
     <Router>
         <CookiesProvider>
-        <div>
             <Header/>
-            <div className="container-fluid">
+            <div className="container h-100">
                 <Route exact path="/" component={App}/>
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/register" component={Register}/>
+                <Route exact path="/dashboard" component={Dashboard}/>
+                <Route exact path="/settings" component={Settings}/>
+                <Route path="/profile" component={Profile}/>
             </div>
-        </div>
         </CookiesProvider>
     </Router>), document.getElementById('root'));
 registerServiceWorker();

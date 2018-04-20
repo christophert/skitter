@@ -1,8 +1,17 @@
+html, body, #root {
+  height: 100%; }
+
 .bg-purple {
   background-color: #6f42c1 !important; }
 
 .color-purple {
   color: #6f42c1 !important; }
+
+.color-white {
+  color: #fff !important; }
+
+.brand-row {
+  height: 500px; }
 
 /*!
  * Bootstrap v4.1.0 (https://getbootstrap.com/)

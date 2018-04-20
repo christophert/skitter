@@ -11,7 +11,30 @@ class Register extends Component {
     };
     constructor(props) {
         super(props);
-        this.state = { email: '', firstName: '', lastName: '' };
+        this.state = { email: '', firstName: '', lastName: '', isLoading: false, isRegistered: false, attemptedRegister: false };
+    }
+
+    isAuthenticated() {
+        fetch('/auth/isAuthenticated', {
+            method: 'GET',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+            }
+        })
+        .then((response) => {
+            if(response.ok) {
+                this.setState({isAuthenticated: true});
+                return response.json();
+            } else {
+                throw new Error("is not authenticated");
+            }
+        })
+        .catch((error) => this.setState({isAuthenticated: false}));
+    }
+
+    componentDidMount() {
+        this.isAuthenticated();
     }
 
     handleChange(propertyName, event) {
@@ -37,22 +60,19 @@ class Register extends Component {
                 lastName: this.state.lastName,
                 password: this.state.password
             })
+            .then(response => {
+                if(!response.ok) {
+                    throw new Error("Error registering");
+                }
+            })
+            .then(() => this.setState({isLoading: false, isRegistered: true, attemptedRegister: true}))
+            .catch((error) => this.setState({error, isLoading: false, isRegistered: false, attemptedRegister: true}))
         });
         event.preventDefault();
     }
 
-    initCSRF() {
-        fetch('/auth/isAuthenticated', {
-            method: 'GET',
-            credentials: "include",
-            headers: {
-                'Accept': 'application/json',
-            }
-        });
-    }
-
       render() {
-        if(cssLoaded === false) { cssLoaded = true; import ('./Register.css'); this.initCSRF(); }
+        if(cssLoaded === false) { cssLoaded = true; import ('./Register.css'); }
         return (
             <CookiesProvider>
             <form className="form-register" onSubmit={this.handleSubmit.bind(this)}>
@@ -70,7 +90,7 @@ class Register extends Component {
                 <label htmlFor="lastName" className="sr-only">Last Name</label>
                 <input type="text" id="lastName" name="lastName" className="form-control" placeholder="Last Name" onChange={this.handleChange.bind(this, 'lastName')} required/>
 
-                <label htmlFor="inputUsername" className="sr-only">Password</label>
+                <label htmlFor="inputPassword" className="sr-only">Password</label>
                 <input type="password" id="password" name="password" className="form-control" value={this.state.password} onChange={this.handleChange.bind(this, 'password')} required autoFocus/>
 
                 <button className="btn btn-lg btn-primary btn-block bg-purple" type="submit">Register</button>
