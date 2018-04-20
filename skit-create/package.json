@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/christophert/skitter#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "elasticsearch": "^14.2.2",
     "elasticsearch-sanitize": "^2.0.0",
     "express": "^4.16.3",
