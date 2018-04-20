@@ -24,7 +24,8 @@ module.exports.SkitController = function SkitController(service) {
     });
     router.get('/GetSkits', function(req, res) {
         let id = req.query.id;
-        return service.getSkits(id)
+        return security.getUid(req)
+            .then(() => service.getSkits(id))
             .then((data) => res.send(data).end())
             .catch((err) => res.status(401).send({error:err}).end());
     });
