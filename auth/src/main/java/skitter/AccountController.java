@@ -35,7 +35,7 @@ public class AccountController {
      * @throws SkitterException Thrown if There is an error with LDAP authentication or user is not registered.
      */
     @RequestMapping(value = "/isAuthenticated", produces = "application/json")
-    public Account isAuthenticated() throws SkitterException {
+    public Account isAuthenticated() throws SkitterUnauthorizedException {
         return accountModel.isAuthenticated();
     }
 
@@ -63,7 +63,7 @@ public class AccountController {
     @RequestMapping(value = "/account", method = RequestMethod.GET, produces = "application/json")
     public Account update(@RequestParam("email") String email,
                           @RequestParam("firstName") String firstName,
-                          @RequestParam("lastName") String lastName) throws SkitterException {
+                          @RequestParam("lastName") String lastName) throws SkitterException, SkitterUnauthorizedException {
         return accountModel.update(new Account()
                 .withEmail(email)
                 .withFirstName(firstName)
