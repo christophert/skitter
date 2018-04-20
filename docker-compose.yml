@@ -43,6 +43,33 @@ services:
             - authentication
     pweb:
         build: web
+    # Activity 7
+    skitdb:
+        build: elasticsearch
+        environment:
+            ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+            CERTS_DIR: $CERTS_DIR
+            xpack.security.http.ssl.enabled: "true"
+            xpack.security.transport.ssl.enabled: "true"
+            xpack.security.transport.ssl.verification_mode: none
+            xpack.ssl.certificate_authorities: $CERTS_DIR/ca.crt
+            xpack.ssl.certificate: $CERTS_DIR/certificate.crt
+            xpack.ssl.key: $CERTS_DIR/certificate.key
+        ports:
+            - 9200:9200
+            - 9300:9300
+        depends_on:
+            - ca
+        command: dockerize -wait http://ca:8888
+    skitcreate:
+        build: skit-create
+        ports:
+            - 81:81
+        depends_on: 
+            - skitdb
+            - ca
+        command: dockerize -wait http://ca:8888
+    # Activity 4
     db:
         build: mysql
         restart: always
@@ -58,6 +85,6 @@ services:
         depends_on:
             - db
             - ca
-        command: dockerize -wait http://db:3306 -wait http://ca:8888
+        command: dockerize -wait http://db:3306 -wait http://ca:8888 
     ca:
         build: app_ca
