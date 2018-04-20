@@ -8,7 +8,7 @@ public interface AccountModel {
      * @return Account of the individual on success
      * @throws SkitterException Thrown if There is an error with LDAP authentication or user is not registered.
      */
-    Account isAuthenticated() throws SkitterException;
+    Account isAuthenticated() throws SkitterUnauthorizedException;
 
     /**
      * Makes a new account after requesting LDAP Access, stores in locally bound SQL DB
@@ -16,7 +16,7 @@ public interface AccountModel {
      * @return Skitter account on successful creation
      * @throws SkitterException Thrown if account already exists or not authenticated
      */
-    Account create(Account account) throws SkitterException;
+    Account create(Account account) throws SkitterException, SkitterUnauthorizedException;
 
     /**
      * Get a Specific Account
@@ -24,7 +24,7 @@ public interface AccountModel {
      * @return Account on success
      * @throws SkitterException if id does not exist
      */
-    Account get(String uid) throws SkitterException;
+    Account get(String uid) throws SkitterException, SkitterUnauthorizedException;
 
     /**
      * Publically exposed function does not require a login
@@ -38,7 +38,7 @@ public interface AccountModel {
      * @return user
      * @throws SkitterException if id doesn't matched login user or user not authenticated
      */
-    void delete(String uid) throws SkitterException;
+    void delete(String uid) throws SkitterException, SkitterUnauthorizedException;
 
     /**
      * Change account information, can only be down by account owner
@@ -46,5 +46,5 @@ public interface AccountModel {
      * @return Updated account as found in database
      * @throws SkitterException thrown if now authenticated or does not match login
      */
-    Account update(Account account) throws SkitterException;
+    Account update(Account account) throws SkitterException, SkitterUnauthorizedException;
 }
