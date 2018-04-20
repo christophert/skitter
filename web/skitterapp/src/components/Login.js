@@ -4,12 +4,6 @@ import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
 
 let cssLoaded = false;
 
-class LoginAlert extends Component {
-    constructor(props) {
-        super(props);
-    }
-}
-
 class Login extends Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired

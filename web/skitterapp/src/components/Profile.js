@@ -1,16 +1,34 @@
 import React from 'react';
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import {
+    Button,
     Card,
     CardImg,
     CardTitle,
     CardSubtitle,
     CardBody,
+    Col,
     Media,
     Row } from 'reactstrap';
 
 export class ProfileCard extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { isFollowing: false, isSelf: props.isSelf }
+    }
+
+
+
     render() {
+        let followButton = [];
+        if (!this.state.isSelf) { //no follow button
+            followButton.push(<br key="br" />);
+            if(this.state.isFollowing) {
+                followButton.push(<Button block color="secondary" key="bun">Unfollow</Button>);
+            } else {
+                followButton.push(<Button block className="bg-purple" key="bf">Follow</Button>);
+            }
+        }
         return (
             <div className="col-4">
                 <Card className="user-profile-card">
@@ -18,6 +36,13 @@ export class ProfileCard extends Component {
                     <CardBody>
                         <CardTitle>First Last</CardTitle>
                         <CardSubtitle>@username</CardSubtitle>
+                        <hr/>
+                        <Row>
+                            <Col xs="4" className="border border-top-0 border-bottom-0 border-left-0"><small>Skits</small><br/>123</Col>
+                            <Col xs="4" className="border border-top-0 border-bottom-0 border-left-0"><small>Followers</small><br/>123</Col>
+                            <Col xs="4"><small>Following</small><br/>123</Col>
+                        </Row>
+                        {followButton}
                     </CardBody>
                 </Card>
             </div>
@@ -32,27 +57,30 @@ class Profile extends Component {
 
     render() {
         return (
-            <Row>
-                <ProfileCard/>
-                <div className="col-8">
-                    <h1 className="color-purple">skits</h1>
-                    <hr/>
-                    <div className="skits">
-                        <Media>
-                            <Media left href="#">
-                                <Media object data-src="holder.js/64x64" alt="asdf" className="rounded-circle" />
-                            </Media>
-                            <Media body>
-                                <Media heading>
-                                    First Last <small className="text-muted">@username</small>
+            <Fragment>
+                <div className="mb-4"></div>
+                <Row>
+                    <ProfileCard/>
+                    <div className="col-8">
+                        <h1 className="color-purple">skits</h1>
+                        <hr/>
+                        <div className="skits">
+                            <Media>
+                                <Media left href="#">
+                                    <Media object src="//via.placeholder.com/64x64" alt="asdf" className="rounded-circle mr-3" />
                                 </Media>
-                                Tweet tweet skit skits seet sfasdfkjdfnf ffkkfkfkfkf
+                                <Media body>
+                                    <Media heading>
+                                        First Last <small className="text-muted">@username</small>
+                                    </Media>
+                                    Tweet tweet skit skits seet sfasdfkjdfnf ffkkfkfkfkf
+                                </Media>
                             </Media>
-                        </Media>
+                        </div>
                     </div>
-                </div>
 
-            </Row>
+                </Row>
+            </Fragment>
         )
     }
 }

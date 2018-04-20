@@ -37,7 +37,7 @@ ReactDOM.render((
     <Router>
         <CookiesProvider>
             <Header/>
-            <div className="container h-100">
+            <div className="container-fluid h-100">
                 <Route exact path="/" component={App}/>
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/register" component={Register}/>
