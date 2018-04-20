@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
@@ -35,8 +37,11 @@ public class AccountController {
      * @throws SkitterException Thrown if There is an error with LDAP authentication or user is not registered.
      */
     @RequestMapping(value = "/isAuthenticated", produces = "application/json")
-    public Account isAuthenticated() throws SkitterUnauthorizedException {
-        return accountModel.isAuthenticated();
+    public ResponseEntity<Account> isAuthenticated() throws SkitterUnauthorizedException {
+        Account acct = accountModel.isAuthenticated();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-SKITTER-AUTH-USER", acct.getUid());
+        return ResponseEntity.ok().headers(headers).body(acct);
     }
 
     /**

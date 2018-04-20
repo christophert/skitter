@@ -11,7 +11,7 @@ class Register extends Component {
     };
     constructor(props) {
         super(props);
-        this.state = { email: '', firstName: '', lastName: '', isLoading: false, isRegistered: false, attemptedRegister: false };
+        this.state = { email: '', firstName: '', lastName: '', username: '', password: '', isLoading: false, isRegistered: false, attemptedRegister: false };
     }
 
     isAuthenticated() {
@@ -60,6 +60,7 @@ class Register extends Component {
                 lastName: this.state.lastName,
                 password: this.state.password
             })
+        })
             .then(response => {
                 if(!response.ok) {
                     throw new Error("Error registering");
@@ -67,7 +68,6 @@ class Register extends Component {
             })
             .then(() => this.setState({isLoading: false, isRegistered: true, attemptedRegister: true}))
             .catch((error) => this.setState({error, isLoading: false, isRegistered: false, attemptedRegister: true}))
-        });
         event.preventDefault();
     }
 
