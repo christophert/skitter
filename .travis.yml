@@ -14,8 +14,9 @@ before_install:
   - docker-compose up -d
 
 script:
-  - docker ps | grep -q skitter_weba_1
-  - docker ps | grep -q skitter_webb_1
+  - docker ps | grep -q skitter_pweb_1
+  - docker ps | grep -q skitter_proxya_1
+  - docker ps | grep -q skitter_proxyb_1
   - docker ps | grep -q skitter_haproxy_1
   - docker ps | grep -q skitter_cachea_1
   - docker ps | grep -q skitter_cacheb_1

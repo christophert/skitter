@@ -17,17 +17,17 @@ function main() {
     app.use(require('express-sanitizer')());
     app.use(require('x-xss-protection')());
     app.use(require('helmet')());
+    app.use(require('cookie-parser')());
 
     let port = process.env.PORT || 81;
-    let router = express.Router();
     // Service instantiation
     let skitService = require('./api/skit_service.js')
         .SkitService(require('./elastic').client);
 
     // All routes go here
     let routes = require('./api/skit_controller.js')
-        .SkitController(router, skitService);
-    routes.forEach((route) => { app.use(route, router); });
+        .SkitController(skitService);
+    app.use('/skits', routes);
 
     require('https').createServer(serverOptions, app).listen(port, function() {
         console.log('Listening on port:' + port);

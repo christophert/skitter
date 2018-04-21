@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Collections;
@@ -23,6 +22,7 @@ import java.util.Optional;
 //@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 @EnableJpaRepositories
 @RestController
+@RequestMapping("/auth")
 public class AccountController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -37,25 +37,28 @@ public class AccountController {
      * @throws SkitterException Thrown if There is an error with LDAP authentication or user is not registered.
      */
     @RequestMapping(value = "/isAuthenticated", produces = "application/json")
-    public Account isAuthenticated() throws SkitterUnauthorizedException {
-        return accountModel.isAuthenticated();
+    public ResponseEntity<Account> isAuthenticated() throws SkitterUnauthorizedException {
+        Account acct = accountModel.isAuthenticated();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-SKITTER-AUTH-USER", acct.getUid());
+        if(acct.getFirstName() != null && acct.getLastName() != null) {
+            headers.add("X-SKITTER-AUTH-NAME", acct.getFirstName() + " " + acct.getLastName());
+        }
+        return ResponseEntity.ok().headers(headers).body(acct);
     }
 
     /**
      * Create Account for an RIT LDAP user
-     * @param email email address
-     * @param firstName first name
-     * @param lastName last name
+     * @param registerRequestBody registration request
      * @return account on successful registration
      */
     @RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json")
-    public Account register(@RequestParam("email") String email,
-                            @RequestParam("firstName") String firstName,
-                            @RequestParam("lastName") String lastName) throws SkitterException, SkitterUnauthorizedException {
-        return accountModel.create(new Account()
-                .withEmail(email)
-                .withFirstName(firstName)
-                .withLastName(lastName));
+    public Account register(@RequestBody AccountRegisterRequestBody registerRequestBody) throws SkitterException {
+        return accountModel.create(registerRequestBody.getUsername(), registerRequestBody.getPassword(),
+                new Account()
+                .withEmail(registerRequestBody.getEmail())
+                .withFirstName(registerRequestBody.getFirstName())
+                .withLastName(registerRequestBody.getLastName()));
     }
 
     /**
@@ -107,13 +110,6 @@ public class AccountController {
      */
     @RequestMapping("/")
     public Session home() {
-        return new Session(accountModel.isAuthenticated(),
-                RequestContextHolder.currentRequestAttributes().getSessionId());
-    }
-
-
-    @RequestMapping(value = "/login",  method = RequestMethod.POST)
-    public Session login() {
         return new Session(accountModel.isAuthenticated(),
                 RequestContextHolder.currentRequestAttributes().getSessionId());
     }

@@ -1,0 +1,23 @@
+{
+	"hostname": "pweb.skitter.app",
+	"request": {
+		"hosts": [
+			"pweb.skitter.app",
+            "pweb"
+		],
+		"key": {
+			"algo": "rsa",
+			"size": 2048
+		},
+		"names": [
+			{
+				"C": "US",
+				"L": "San Francisco",
+				"O": "Skitter",
+                "OU": "PWEB",
+				"ST": "California",
+                "CN": "pweb.skitter.app"
+			}
+		]
+	}
+}
