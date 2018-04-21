@@ -5,24 +5,43 @@ services:
         ports:
             - 1936:1936
             - 80:80
+            - 443:443
         depends_on:
             - cachea
             - cacheb
     cachea:
         build: cache
+        environment:
+            SSL_HOSTNAME: cachea
         links:
-            - "weba:web"
+            - "proxya:web"
         depends_on:
-            - weba
+            - ca
+            - proxya
     cacheb:
         build: cache
+        environment:
+            SSL_HOSTNAME: cacheb
         links:
-            - "webb:web"
+            - "proxyb:web"
         depends_on:
-            - webb
-    weba:
-        build: web
-    webb:
+            - ca
+            - proxyb
+    proxya:
+        build: proxy
+        environment:
+            SSL_HOSTNAME: proxya
+        depends_on:
+            - pweb
+            - authentication
+    proxyb:
+        build: proxy
+        environment:
+            SSL_HOSTNAME: proxyb 
+        depends_on:
+            - pweb
+            - authentication
+    pweb:
         build: web
     # Activity 7
     skitdb:
@@ -68,6 +87,8 @@ services:
             MYSQL_USER: skitter_overlord
             MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
             MYSQL_ROOT_PASSWORD: "included because docker said so"
+        ports:
+            - 3306:3306
     authentication:
         build: auth
         ports:
@@ -78,3 +99,5 @@ services:
         command: dockerize -wait http://db:3306 -wait http://ca:8888 
     ca:
         build: app_ca
+    sut:
+        build: testdata
