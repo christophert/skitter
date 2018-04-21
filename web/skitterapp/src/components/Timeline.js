@@ -13,6 +13,9 @@ class Timeline extends Component {
     };
     constructor(props) {
         super(props);
+        console.log("hi mom");
+        console.log(arguments);
+        console.log(JSON.stringify(props));
         this.state = { timelineData: [], isLoading: false, user: props.username };
         this.getTimelineData = this.getTimelineData.bind(this);
     }

@@ -72,6 +72,7 @@ class Login extends Component {
                 }
             })
             .then(() => this.setState({isLoading: false, isAuthenticated: true, attemptedLogin: true}))
+            .then(() => this.props.history.push("/dashboard"))
             .catch((error) => this.setState({error, isLoading: false, isAuthenticated: false, attemptedLogin: true}));
         event.preventDefault();
     }

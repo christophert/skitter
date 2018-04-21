@@ -54,16 +54,12 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         console.log();
-        this.state = { user_to_get:'', userInfo: {} };
+        const userInfo = localStorage.getItem('userInfo');
+        console.log("I swear you should work", userInfo);
+        this.state = { userInfo: JSON.parse(userInfo) };
     }
 
     componentDidMount() {
-        console.log('test');
-        const userInfo = localStorage.getItem('userInfo');
-        console.log(userInfo);
-        if(userInfo) {
-            this.setState({userInfo: JSON.parse(userInfo)});
-        }
     }
 
 
