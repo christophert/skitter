@@ -1,20 +1,22 @@
 {
-	"hostname": "es.skitter.app",
+	"hostname": "skitdb",
 	"request": {
 		"hosts": [
-			"es.skitter.app"
+			"skitdb.skitter.app",
+            "skitdb"
 		],
 		"key": {
 			"algo": "rsa",
 			"size": 2048
 		},
+        "CN": "skitdb",
 		"names": [
 			{
 				"C": "US",
 				"L": "San Francisco",
 				"O": "Skitter",
-				"ST": "California",
-                "CN": "es.skitter.app"
+                "OU": "ES",
+				"ST": "California"
 			}
 		]
 	}
