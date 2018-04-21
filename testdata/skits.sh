@@ -54,13 +54,6 @@ curl -k -X POST -d '{"msg":"This is the 5 skit"}'\
      --header "Accept: */*" \
     https://skitcreate:81/skits/AddSkit
 
-curl -k -X POST -d '{"msg":"This user does not exist"}'\
-     --header "Content-Type: application/json" \
-     --header "X-SKITTER-AUTH-USER: HI mMOM" \
-     --header "X-SKITTER-AUTH-NAME: jfb3657" \
-     --header "Accept: */*" \
-    https://skitcreate:81/skits/AddSkit
-
 curl -k -X POST -d '{"msg":"Hello world."}'\
      --header "Content-Type: application/json" \
      --header "X-SKITTER-AUTH-USER: tk3775" \
