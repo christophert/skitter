@@ -1,0 +1,10 @@
+server.name: "SkitterKibana"
+server.host: "0"
+server.basePath: "/kibana"
+server.ssl.enabled: true
+server.ssl.key: /usr/share/kibana/ssl/kibana.key
+server.ssl.certificate: /usr/share/kibana/ssl/kibana.crt
+server.ssl.certificateAuthorities: /usr/share/kibana/ssl/ca.pem
+
+elasticsearch.url: https://skitdb:9200
+elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/ssl/ca.pem

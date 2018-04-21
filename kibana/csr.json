@@ -1,0 +1,23 @@
+{
+	"hostname": "kibana.skitter.app",
+	"request": {
+		"hosts": [
+			"kibana.skitter.app",
+            "kibana"
+		],
+		"key": {
+			"algo": "rsa",
+			"size": 2048
+		},
+        "CN": "kibana.skitter.app",
+		"names": [
+			{
+				"C": "US",
+				"L": "San Francisco",
+				"O": "Skitter",
+                "OU": "ES",
+				"ST": "California"
+			}
+		]
+	}
+}
