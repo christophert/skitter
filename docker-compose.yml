@@ -80,8 +80,6 @@ services:
             MYSQL_USER: skitter_overlord
             MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
             MYSQL_ROOT_PASSWORD: "included because docker said so"
-        ports:
-            - 3306:3306
     authentication:
         build: auth
         ports:
