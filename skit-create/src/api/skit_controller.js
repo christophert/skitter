@@ -12,7 +12,7 @@ module.exports.SkitController = function SkitController(service) {
         let msg = req.body.msg;
         return security.getUid(req)
             .catch((err) => res.status(401).send({error:err}).end())
-            .then((id) => service.addSkit(id, msg))
+            .then((auth) => service.addSkit(auth.uid, auth.name, msg))
             .then(() => res.end())
             .catch((err) => res.status(500).send({error:err}).end());
     });
@@ -20,7 +20,7 @@ module.exports.SkitController = function SkitController(service) {
         let skitId = req.query.skitId;
         return security.getUid(req)
             .catch((err) => res.status(401).send({error:err}).end())
-            .then((id) => service.deleteSkit(id, skitId))
+            .then((auth) => service.deleteSkit(auth.uid, skitId))
             .then(() => res.end())
             .catch((err) => res.status(500).send({error:err}).end());
     });
