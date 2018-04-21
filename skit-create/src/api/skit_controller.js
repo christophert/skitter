@@ -14,7 +14,7 @@ module.exports.SkitController = function SkitController(service) {
             .catch((err) => res.status(401).send({error:err}).end())
             .then((auth) => service.addSkit(auth.uid, auth.name, msg))
             .then(() => res.end())
-            .catch((err) => res.status(500).send({error:err}).end());
+            .catch((err) => res.status(404).send({error:err}).end());
     });
     router.delete('/RemoveSkit', function(req, res) {
         let skitId = req.query.skitId;
@@ -22,7 +22,7 @@ module.exports.SkitController = function SkitController(service) {
             .catch((err) => res.status(401).send({error:err}).end())
             .then((auth) => service.deleteSkit(auth.uid, skitId))
             .then(() => res.end())
-            .catch((err) => res.status(500).send({error:err}).end());
+            .catch((err) => res.status(404).send({error:err}).end());
     });
     router.get('/GetSkits', function(req, res) {
         let id = req.query.id;
@@ -30,7 +30,7 @@ module.exports.SkitController = function SkitController(service) {
             .catch((err) => res.status(401).send({error:err}).end())
             .then(() => service.getSkits(id))
             .then((data) => res.send(data).end())
-            .catch((err) => res.status(500).send({error:err}).end());
+            .catch((err) => res.status(404).send({error:err}).end());
     });
     return router;
 };
