@@ -41,6 +41,9 @@ public class AccountController {
         Account acct = accountModel.isAuthenticated();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-SKITTER-AUTH-USER", acct.getUid());
+        if(acct.getFirstName() != null && acct.getLastName() != null) {
+            headers.add("X-SKITTER-AUTH-NAME", acct.getFirstName() + " " + acct.getLastName());
+        }
         return ResponseEntity.ok().headers(headers).body(acct);
     }
 
