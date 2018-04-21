@@ -34,6 +34,9 @@ class Login extends Component {
                 throw new Error("is not authenticated");
             }
         })
+        .then((data) => {
+            localStorage.setItem("userInfo", JSON.stringify(data));
+        })
         .catch((error) => this.setState({isAuthenticated: false}));
     }
 
