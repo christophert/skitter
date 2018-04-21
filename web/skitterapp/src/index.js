@@ -43,7 +43,8 @@ ReactDOM.render((
                 <Route exact path="/register" component={Register}/>
                 <Route exact path="/dashboard" component={Dashboard}/>
                 <Route exact path="/settings" component={Settings}/>
-                <Route path="/profile" component={Profile}/>
+                <Route exact path="/profile" component={Profile}/>
+                <Route path='/profile/:uid' component={Profile}/>
             </div>
         </CookiesProvider>
     </Router>), document.getElementById('root'));

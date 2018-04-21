@@ -14,7 +14,9 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem } from 'reactstrap';
+import {GearIcon} from 'react-octicons';
 
+let cssLoaded = false;
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -37,47 +39,40 @@ class Header extends Component {
     }
 
     render() {
+        if(cssLoaded === false) { cssLoaded = true; import ('./Header.css'); }
         let navState = [];
         if(this.state.userInfo) {
             let searchForm = (
-                <Form className="form-inline my-2 my-lg-0">
-                    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                    <button className="btn btn-outline-success my-2 mr-2 my-sm-0" type="submit">Search</button>
+                <Form className="form-inline my-2 my-lg-0" key="searchForm">
+                    <input className="form-control header-search mr-sm-2 bg-purple" type="search" placeholder="Search" aria-label="Search" />
                 </Form>
             )
             navState.push(searchForm);
             let userInd;
             if(this.state.userInfo.firstName != null && this.state.userInfo.lastName != null) {
                 userInd = (
-                    <span className="navbar-text">
+                    <span className="navbar-text pr-2" key="userInd">
                         {this.state.userInfo.firstName} {this.state.userInfo.lastName}
                     </span>
                 );
             } else {
                 userInd = (
-                    <span className="navbar-text">
+                    <span className="navbar-text" key="userInd">
                         {this.state.userInfo.uid}
                     </span>
                 );
             }
 
-            navState.push(userInd);
             let userDropdown = (
-                <UncontrolledDropdown nav inNavbar>
+                <UncontrolledDropdown nav inNavbar key="navDropdown">
                     <DropdownToggle nav caret>
-                        G
+                       {userInd} 
                     </DropdownToggle>
                     <DropdownMenu right>
-                        <DropdownItem>
-                            My Profile
-                        </DropdownItem>
-                        <DropdownItem>
-                            Settings
-                        </DropdownItem>
+                        <Link className="dropdown-item" to="/profile">My Profile</Link>
+                        <Link className="dropdown-item" to="/settings">Settings</Link>
                         <DropdownItem divider />
-                        <DropdownItem>
-                            Logout
-                        </DropdownItem>
+                        <Link className="dropdown-item" to="/logout">Logout</Link>
                     </DropdownMenu>
                 </UncontrolledDropdown>
             );
@@ -85,11 +80,11 @@ class Header extends Component {
 
         } else {
             navState.push((
-                <NavItem>
+                <NavItem key="login">
                     <Link to="/login" className="nav-link">Login</Link>
                 </NavItem>));
             navState.push((
-                <NavItem>
+                <NavItem key="register">
                     <Link to="/register" className="nav-link">Register</Link>
                 </NavItem>
             ));
