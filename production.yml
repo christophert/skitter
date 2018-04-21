@@ -3,7 +3,6 @@ services:
     haproxy:
         build: loadbal
         ports:
-            - 1936:1936
             - 80:80
             - 443:443
         depends_on:
@@ -55,16 +54,11 @@ services:
             xpack.ssl.certificate_authorities: $CERTS_DIR/ca.crt
             xpack.ssl.certificate: $CERTS_DIR/certificate.crt
             xpack.ssl.key: $CERTS_DIR/certificate.key
-        ports:
-            - 9200:9200
-            - 9300:9300
         depends_on:
             - ca
         command: dockerize -wait http://ca:8888
     skitcreate:
         build: skit-create
-        ports:
-            - 81:81
         depends_on: 
             - skitdb
             - ca
@@ -78,17 +72,11 @@ services:
             MYSQL_USER: skitter_overlord
             MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
             MYSQL_ROOT_PASSWORD: "included because docker said so"
-        ports:
-            - 3306:3306
     authentication:
         build: auth
-        ports:
-            - 8080:8080
         depends_on:
             - db
             - ca
         command: dockerize -wait http://db:3306 -wait http://ca:8888 
     ca:
         build: app_ca
-    sut:
-        build: testdata
