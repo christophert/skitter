@@ -43,6 +43,15 @@ services:
             - authentication
     pweb:
         build: web
+    php:
+        build: settings
+        volumes:
+            - ./code:/code
+        environment:
+            SKITTER_DB_USER: $SKITTER_DB_USER
+            SKITTER_DB_PASS: $SKITTER_DB_PASS
+        depends_on:
+            - db
     # Activity 7
     skitdb:
         build: elasticsearch
@@ -75,8 +84,8 @@ services:
         restart: always
         environment:
             MYSQL_DATABASE: skitter
-            MYSQL_USER: skitter_overlord
-            MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
+            MYSQL_USER: $SKITTER_DB_USER 
+            MYSQL_PASSWORD: $SKITTER_DB_PASS
             MYSQL_ROOT_PASSWORD: "included because docker said so"
     authentication:
         build: auth
