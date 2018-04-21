@@ -33,7 +33,7 @@ cat ca.crt > /var/www/ca.crt
 
 # generate dhparam
 if [ ! -f /etc/ssl/dhparam.pem ]; then
-    openssl dhparam -out /etc/ssl/dhparam.pem 2048 > /dev/null
+    openssl dhparam -out /etc/ssl/dhparam.pem 2048 2> /dev/null
 fi
 
 # clean unessessary files
