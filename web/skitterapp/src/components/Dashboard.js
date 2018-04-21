@@ -16,6 +16,7 @@ import {
     Media,
     Row } from 'reactstrap';
 import { ProfileCard } from './Profile';
+import Timeline from './Timeline';
 
 class Dashboard extends Component {
     static propTypes = {
@@ -81,19 +82,7 @@ class Dashboard extends Component {
                             </Media>
                         </Media>
                         <hr/>
-                        <div className="skits">
-                            <Media>
-                                <Media left href="#">
-                                    <Media object src="//via.placeholder.com/64x64" alt="asdf" className="rounded-circle mr-3" />
-                                </Media>
-                                <Media body>
-                                    <Media heading>
-                                        First Last <small className="text-muted">@username</small>
-                                    </Media>
-                                    Tweet tweet skit skits seet sfasdfkjdfnf ffkkfkfkfkf
-                                </Media>
-                            </Media>
-                        </div>
+                        <Timeline username="ctt1414" />
                     </div>
 
                 </Row>
