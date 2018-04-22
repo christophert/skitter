@@ -38,6 +38,10 @@ services:
             - pweb
             - authentication
             - php
+            - ruby
+            - kibana
+            - skitcreate
+            - flask
     proxyb:
         build: proxy
         volumes:
@@ -49,6 +53,10 @@ services:
             - pweb
             - authentication
             - php
+            - ruby
+            - kibana
+            - skitcreate
+            - flask
     pweb:
         build: web
     php:
@@ -110,8 +118,6 @@ services:
         build: app_ca
     flask:
         build: flask
-        ports:
-            - 1337:1337
         depends_on:
             - db
             - ca
@@ -120,8 +126,5 @@ services:
         build: testdata
     ruby:
         build: rubyonrails
-        ports:
-            - 3000:3000
 volumes:
     profile_pictures:
-
