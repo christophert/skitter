@@ -127,6 +127,12 @@ class Settings extends Component {
                 },
                 retry: {
                     enableAuto: false
+                },
+                callbacks: {
+                    onComplete: () => { window.location.reload(); }
+                },
+                cors: {
+                    sendCredentials: true
                 }
             }
         })
