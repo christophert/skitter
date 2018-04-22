@@ -5,25 +5,71 @@ services:
         ports:
             - 1936:1936
             - 80:80
+            - 443:443
         depends_on:
             - cachea
             - cacheb
     cachea:
         build: cache
+        environment:
+            SSL_HOSTNAME: cachea
         links:
-            - "weba:web"
+            - "proxya:web"
         depends_on:
-            - weba
+            - ca
+            - proxya
     cacheb:
         build: cache
+        environment:
+            SSL_HOSTNAME: cacheb
         links:
-            - "webb:web"
+            - "proxyb:web"
         depends_on:
-            - webb
-    weba:
+            - ca
+            - proxyb
+    proxya:
+        build: proxy
+        environment:
+            SSL_HOSTNAME: proxya
+        depends_on:
+            - pweb
+            - authentication
+    proxyb:
+        build: proxy
+        environment:
+            SSL_HOSTNAME: proxyb 
+        depends_on:
+            - pweb
+            - authentication
+    pweb:
         build: web
-    webb:
-        build: web
+    # Activity 7
+    skitdb:
+        build: elasticsearch
+        environment:
+            ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+            CERTS_DIR: $CERTS_DIR
+            xpack.security.http.ssl.enabled: "true"
+            xpack.security.transport.ssl.enabled: "true"
+            xpack.security.transport.ssl.verification_mode: none
+            xpack.ssl.certificate_authorities: $CERTS_DIR/ca.crt
+            xpack.ssl.certificate: $CERTS_DIR/certificate.crt
+            xpack.ssl.key: $CERTS_DIR/certificate.key
+        ports:
+            - 9200:9200
+            - 9300:9300
+        depends_on:
+            - ca
+        command: dockerize -wait http://ca:8888
+    skitcreate:
+        build: skit-create
+        ports:
+            - 81:81
+        depends_on: 
+            - skitdb
+            - ca
+        command: dockerize -wait http://ca:8888
+    # Activity 4
     db:
         build: mysql
         restart: always
@@ -39,7 +85,7 @@ services:
         depends_on:
             - db
             - ca
-        command: dockerize -wait http://db:3306 -wait http://ca:8888
+        command: dockerize -wait http://db:3306 -wait http://ca:8888 
     ca:
         build: app_ca
     flask:
@@ -50,3 +96,9 @@ services:
             - db
             - ca
         command: dockerize -wait http://db:3306 -wait http://ca:8888
+    sut:
+        build: testdata
+    ruby:
+        build: rubyonrails
+        ports:
+            - 3000:3000

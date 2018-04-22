@@ -7,7 +7,8 @@ KEYSTORE_PASSWORD=$(cat private-pass)
 #    -hostname=authentication csr.json
 
 # get CA Certificate
-curl -XPOST -H "Content-Type: application/json" -d '{"label": "primary"}' http://ca:8888/api/v1/cfssl/info > ca.json
+curl -XPOST -H "Content-Type: application/json" -d '{"label": "primary"}' \
+    http://ca:8888/api/v1/cfssl/info > ca.json
 
 curl -X POST -H "Content-Type: application/json" -d @csr.json \
     http://ca:8888/api/v1/cfssl/newcert > full_cert.json

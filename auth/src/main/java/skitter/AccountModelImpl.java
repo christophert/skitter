@@ -1,13 +1,22 @@
 package skitter;
 
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,29 +28,32 @@ public class AccountModelImpl implements AccountModel {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
     /**
      * Get's information from the SSO Authentication suite included with Spring to verify
      * they are a Valid LDAP user on RIT's network
      * @return UID of the account
      * @throws SkitterException Thrown if There is an error with LDAP authentication
      */
-    public String verifyRitLdapInformation() throws SkitterException {
+    public String verifyRitLdapInformation() throws SkitterUnauthorizedException {
         if (SecurityContextHolder.getContext() == null ||
                 SecurityContextHolder.getContext().getAuthentication() == null ||
                 !(SecurityContextHolder.getContext().getAuthentication() instanceof UsernamePasswordAuthenticationToken)) {
-            throw new SkitterException("No valid authentication was present for client on LDAP Server");
+            throw new SkitterUnauthorizedException("No valid authentication was present for client on LDAP Server");
         }
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() == null) {
-            throw new SkitterException("Unable to load principal for authentication");
+            throw new SkitterUnauthorizedException("Unable to load principal for authentication");
         }
         LdapUserDetailsImpl principal = (LdapUserDetailsImpl)authentication.getPrincipal();
 
         String uid = principal.getUsername();
         if (uid == null) {
-            throw new SkitterException("Was unable to find a username in RIT's LDAP");
+            throw new SkitterUnauthorizedException("Was unable to find a username in RIT's LDAP");
         }
         return uid;
     }
@@ -54,12 +66,12 @@ public class AccountModelImpl implements AccountModel {
      * @throws SkitterException Thrown if There is an error with LDAP authentication or user is not registered.
      */
     @Override
-    public Account isAuthenticated() throws SkitterException {
+    public Account isAuthenticated() throws SkitterUnauthorizedException {
         String uid = verifyRitLdapInformation();
         Optional<Account> acct = accountRepository.findById(uid);
 
         if (!acct.isPresent()) {
-            throw new SkitterException("This is a valid LDAP Account but does not have a registered Skitter acct");
+            throw new SkitterUnauthorizedException("This is a valid LDAP Account but does not have a registered Skitter acct");
         }
         return acct.get();
     }
@@ -71,22 +83,35 @@ public class AccountModelImpl implements AccountModel {
      * @throws SkitterException Thrown if account already exists or not authenticated
      */
     @Override
-    public Account create(Account account) throws SkitterException {
-        String uid = verifyRitLdapInformation();
-        Optional<Account> acct = accountRepository.findById(uid);
-        if (acct.isPresent()) {
-            throw new SkitterException("Account already exists in database");
+    public Account create(String username, String password, Account account) throws SkitterException {
+        try {
+            UsernamePasswordAuthenticationToken authReq
+                    = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication auth = authenticationManager.authenticate(authReq);
+            SecurityContext sc = SecurityContextHolder.getContext();
+            sc.setAuthentication(auth);
+
+            if (!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+                throw new SkitterException("Not a valid LDAP username and password");
+            }
+        } catch (Exception ex) {
+            throw new SkitterException("Not a valid LDAP username and password");
         }
 
-        accountRepository.save(new Account().withUid(uid)
+        Optional<Account> acct = accountRepository.findById(username);
+        if (acct.isPresent()) {
+            throw new SkitterUnauthorizedException("Account already exists in database");
+        }
+
+        accountRepository.save(new Account().withUid(username)
                 .withEmail(account.getEmail())
                 .withFirstName(account.getFirstName())
                 .withLastName(account.getLastName()));
 
-        acct = accountRepository.findById(uid);
+        acct = accountRepository.findById(username);
 
         if (!acct.isPresent()) {
-            throw new SkitterException("This is a valid LDAP Account but does not have a registered Skitter acct");
+            throw new SkitterException("Error on creation of account with username: " + username);
         }
         return acct.get();
     }
@@ -97,7 +122,7 @@ public class AccountModelImpl implements AccountModel {
      * @return Account on success
      * @throws SkitterException if id does not exist
      */
-    public Account get(String uid) throws SkitterException {
+    public Account get(String uid) throws SkitterException, SkitterUnauthorizedException {
         Optional<Account> acct = accountRepository.findById(uid);
         return acct.get();
     }
@@ -114,7 +139,7 @@ public class AccountModelImpl implements AccountModel {
      * @throws SkitterException if id doesn't matched login user or user not authenticated
      */
     @Override
-    public void delete(String uid) throws SkitterException {
+    public void delete(String uid) throws SkitterException, SkitterUnauthorizedException {
         Optional<Account> acct = accountRepository.findById(uid);
         if (!acct.isPresent()) {
             throw new SkitterException("Account does not exist in database");
@@ -132,7 +157,7 @@ public class AccountModelImpl implements AccountModel {
      * @throws SkitterException thrown if now authenticated or does not match login
      */
     @Override
-    public Account update(Account account) throws SkitterException {
+    public Account update(Account account) throws SkitterException, SkitterUnauthorizedException {
         String uid = verifyRitLdapInformation();
         account.setUid(uid);
 
