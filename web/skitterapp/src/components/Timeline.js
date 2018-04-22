@@ -5,7 +5,8 @@ import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
 import {
     Media,
     Row } from 'reactstrap';
-import _ from 'lodash';
+import ReactImageFallback from "react-image-fallback";
+let cssLoaded = false;
 
 class Timeline extends Component {
     static propTypes = {
@@ -53,12 +54,16 @@ class Timeline extends Component {
     }
 
     render() {
+        if(cssLoaded === false) { cssLoaded = true; import ('./Timeline.css'); }
         console.log(this.state);
         let skits = this.state.timelineData.map((skit) => {
             return (
                 <Media key={skit._id} className="mb-3">
                     <Media left href="#">
-                        <Media object src="//via.placeholder.com/64x64" alt="Profile picture" className="rounded-circle mr-3" />
+                        <ReactImageFallback src={"/profile_pictures/" + this.state.user + ".jpg"}
+                            fallbackImage="//via.placeholder.com/64x64"
+                            alt={this.state.user}
+                            className="skit-profile-img media-object rounded-circle mr-3" />
                     </Media>
                     <Media body>
                         <div className="mt-0">
