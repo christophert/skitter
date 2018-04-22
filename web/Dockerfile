@@ -1,16 +1,14 @@
 FROM node:carbon
 
+RUN npm install -g serve
 WORKDIR /usr/src/app
-COPY skitterapp /tmp/skitterapp
+COPY skitterapp/package.json ./package.json
+COPY skitterapp/package-lock.json ./package-lock.json
+RUN npm install 
 
-# temporarily have the entire webapp, build it, and move it to the app directory and delete the full repo folder
-RUN cd /tmp/skitterapp && npm install && npm run build && mv build /usr/src/app && rm -rf /tmp/skitterapp
+COPY skitterapp ./
+RUN npm run build
 
-COPY skitterapp/server.js ./
-COPY package.json ./
-COPY build.sh ./
-COPY csr.json ./
+EXPOSE 5000
 
-EXPOSE 80
-
-ENTRYPOINT ["./build.sh"]
+ENTRYPOINT ["/usr/local/bin/serve", "-s", "build"]
