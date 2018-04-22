@@ -3,19 +3,33 @@
 module.exports.SkitService = function SkitService(client) {
     let xss = require('xss');
 
-    function _addSkit(id, message) {
+    function _addSkit(id, fullname, message) {
         return client.index({
             index: id,
             type: 'skits',
             body: {
+                name: fullname,
                 msg: message,
-                date: new Date().toISOString(),
+                date: new Date()
             }
         });
     }
 
     function _addIndex(id) {
-        return client.indices.create({index: id})
+        return client.indices.create({
+            index: id,
+            body: {
+                mappings: {
+                    skits: {
+                        properties: {
+                            name: {type:'text'},
+                            msg: {type:'text'},
+                            date: {type:'date'}
+                        }
+                    }
+                }
+            }
+        });
     }
 
     return {
@@ -28,11 +42,14 @@ module.exports.SkitService = function SkitService(client) {
          * @param message
          * @returns {*}
          */
-        addSkit : function addSkit(id, message) {
+        addSkit : function addSkit(id, fullname, message) {
             id = xss(id || '');
             message = xss(message || '');
             if (!id) {
                 return Promise.reject("Invalid id");
+            }
+            if (!fullname) {
+                return Promise.reject("No name supplied");
             }
             if (!message || message.length > 140) {
                 return Promise.reject("Message must be less than 140 characters and must contin data");
@@ -41,10 +58,10 @@ module.exports.SkitService = function SkitService(client) {
             return client.indices.exists({index:id})
                 .then(function (exists) {
                     if (exists) {
-                        return _addSkit(id, message);
+                        return _addSkit(id, fullname, message);
                     }
                     return _addIndex(id)
-                        .then(() => _addSkit(id, message));
+                        .then(() => _addSkit(id, fullname, message));
                 });
         },
 
@@ -88,7 +105,10 @@ module.exports.SkitService = function SkitService(client) {
                 return Promise.reject("No ID supplied");
             }
 
-            return client.search({index: id});
+            return client.search({
+                index: id,
+                sort: [ 'date:desc' ]
+            });
         }
     };
 };

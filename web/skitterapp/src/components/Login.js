@@ -34,6 +34,9 @@ class Login extends Component {
                 throw new Error("is not authenticated");
             }
         })
+        .then((data) => {
+            localStorage.setItem("userInfo", JSON.stringify(data));
+        })
         .catch((error) => this.setState({isAuthenticated: false}));
     }
 
@@ -69,6 +72,7 @@ class Login extends Component {
                 }
             })
             .then(() => this.setState({isLoading: false, isAuthenticated: true, attemptedLogin: true}))
+            .then(() => this.props.history.push("/dashboard"))
             .catch((error) => this.setState({error, isLoading: false, isAuthenticated: false, attemptedLogin: true}));
         event.preventDefault();
     }

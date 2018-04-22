@@ -32,7 +32,9 @@ cat /etc/ssl/cache.pem
 cat ca.crt certificate.key >> /etc/ssl/cache.pem
 
 # generate dhparam
-openssl dhparam -out /etc/ssl/dhparam.pem 2048 > /dev/null
+if [ ! -f /etc/ssl/dhparam.pem ]; then
+    openssl dhparam -out /etc/ssl/dhparam.pem 2048 > /dev/null
+fi
 
 # clean unessessary files
 rm ca.json full_cert.json ca.crt certificate.key 

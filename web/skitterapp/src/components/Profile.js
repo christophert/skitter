@@ -10,13 +10,13 @@ import {
     Col,
     Media,
     Row } from 'reactstrap';
+import Timeline from './Timeline';
 
 export class ProfileCard extends Component {
     constructor(props) {
         super(props);
         this.state = { isFollowing: false, isSelf: props.isSelf }
     }
-
 
 
     render() {
@@ -53,9 +53,18 @@ export class ProfileCard extends Component {
 class Profile extends Component {
     constructor(props) {
         super(props);
+        console.log();
+        const userInfo = localStorage.getItem('userInfo');
+        console.log("I swear you should work", userInfo);
+        this.state = { userInfo: JSON.parse(userInfo) };
     }
 
+    componentDidMount() {
+    }
+
+
     render() {
+        console.log(this.state.userInfo.uid)
         return (
             <Fragment>
                 <div className="mb-4"></div>
@@ -64,19 +73,7 @@ class Profile extends Component {
                     <div className="col-8">
                         <h1 className="color-purple">skits</h1>
                         <hr/>
-                        <div className="skits">
-                            <Media>
-                                <Media left href="#">
-                                    <Media object src="//via.placeholder.com/64x64" alt="asdf" className="rounded-circle mr-3" />
-                                </Media>
-                                <Media body>
-                                    <Media heading>
-                                        First Last <small className="text-muted">@username</small>
-                                    </Media>
-                                    Tweet tweet skit skits seet sfasdfkjdfnf ffkkfkfkfkf
-                                </Media>
-                            </Media>
-                        </div>
+                        <Timeline username={this.state.userInfo.uid} />
                     </div>
 
                 </Row>
