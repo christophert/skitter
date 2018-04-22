@@ -32,40 +32,49 @@ def query_db(query, args=(), one=False, stringify=True):
         return dumps(dictionary)
     return dictionary
 
-@APP.route('/GetFollowers')
+@APP.route('/follows/GetFollowers')
 def get_folowers():
     """
     Grabs all followers for a given user id (request.args.get(uid))
     :return json dump of followers
     """
+    if 'X-SKITTER-AUTH-USER' not in request.headers:
+        abort(400, 'No Skitter Header assigned')
+        return ""
     user = request.args.get('uid')
     if user is None or len(user) <= 0:
         return "[]"
     return query_db("SELECT following FROM follower WHERE user_id=%s", (user,))
 
-@APP.route('/UserSearch')
+@APP.route('/follows/UserSearch')
 def get_users():
     """
     Does a quick query against the user database to find a specific
     user id (request.args.get(uid))
     :return json dump of account objects
     """
+    if 'X-SKITTER-AUTH-USER' not in request.headers:
+        abort(400, 'No Skitter Header assigned')
+        return ""
     user = request.args.get('uid')
     if user is None or len(user) <= 0:
         return query_db("SELECT * FROM account;")
     return query_db("SELECT * FROM account WHERE uid LIKE %s;",\
             ("%" + user + "%",))
 
-@APP.route('/FollowUser', methods=['POST'])
+@APP.route('/follows/FollowUser', methods=['POST'])
 def follow_user():
     """
     Adds a followed user to the database table if able
     """
     data = request.get_json()
-    if data is None or 'uid' not in data or 'follow' not in data:
+    if data is None or 'follow' not in data:
         abort(400, 'Requires json form: {uid:\'\', follow: \'\'}')
         return ""
-    user = data['uid']
+    user = request.headers['X-SKITTER-AUTH-USER']
+    if user is None:
+        abort(400, 'No Skitter Header assigned')
+        return ""
     follow = data['follow']
 
     if len(query_db("SELECT * FROM account WHERE uid=%s", \
@@ -85,12 +94,15 @@ def follow_user():
     return query_db('SELECT * FROM follower WHERE user_id=%s ' + \
             'AND following=%s;', (user, follow), one=True)
 
-@APP.route('/UnfollowUser', methods=['DELETE'])
+@APP.route('/follows/UnfollowUser', methods=['DELETE'])
 def unfollow_user():
     """
     Adds a followed user to the database table if able
     """
-    user = request.args.get('uid')
+    user = request.headers['X-SKITTER-AUTH-USER']
+    if user is None:
+        abort(400, 'No Skitter Header assigned')
+        return ""
     follow = request.args.get('follow')
     if user is None or follow is None:
         abort(400, 'Requires uid and follow as query parameters')
