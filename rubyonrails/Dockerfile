@@ -1,8 +1,8 @@
 FROM ruby:latest
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs curl 
 
-COPY ./ /api
-WORKDIR /api
-RUN bundle install
+COPY ./ ./
+RUN cd src && bundle install
+RUN cd ..
 
-ENTRYPOINT ["bundle exec rails s -p 3000 -b '0.0.0.0'"]
+ENTRYPOINT ["/bin/bash", "./build.sh"]
