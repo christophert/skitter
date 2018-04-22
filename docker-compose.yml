@@ -29,24 +29,30 @@ services:
             - proxyb
     proxya:
         build: proxy
+        volumes:
+            - ./settings/code:/var/www/settingsapi
         environment:
             SSL_HOSTNAME: proxya
         depends_on:
             - pweb
             - authentication
+            - php
     proxyb:
         build: proxy
+        volumes:
+            - ./settings/code:/settingsapi
         environment:
             SSL_HOSTNAME: proxyb 
         depends_on:
             - pweb
             - authentication
+            - php
     pweb:
         build: web
     php:
         build: settings
         volumes:
-            - ./code:/code
+            - ./settings/code:/var/www/settingsapi
         environment:
             SKITTER_DB_USER: $SKITTER_DB_USER
             SKITTER_DB_PASS: $SKITTER_DB_PASS
