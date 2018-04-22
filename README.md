@@ -7,6 +7,7 @@ Detailed documentation can be found on the [Skitter wiki](https://github.com/chr
 * [Development & Testing](#development--testing)
   * [Prerequsites](#prerequsites)
 * [Contributing](#contributing)
+* [Endpoints](#endpoints)
 * [License](#license)
 
 ## Development & Testing
@@ -18,7 +19,7 @@ To commence development, you will require the following:
 * docker-compose 1.19.0+
 
 
-## Endpoint list
+## Endpoints
 
 We have thuroughly secured a good deal of our enpoints. Each are actually sitting on their own docker instances,
 but are being proxied for our application through one entrypoint for simplicity and security. All endpoints are secured with a dynamic CA server that generates all keys and certificates for each server individually.  This happens on startup of each service.
