@@ -8,6 +8,10 @@ class SkitreplyController < ApplicationController
       @otherUid = @json['uid']
       @uid = request.headers['X-SKITTER-AUTH-USER']
       @name = request.headers['X-SKITTER-AUTH-NAME']
+      @csrf = request.headers['X-XSRF-TOKEN']
+      if @csrf.to_s.empty?
+          render json: {error: 'csrf header not set'}, status: :forbidden
+      end
       if @reply.to_s.empty? or @reply.length > 140
           render json: {error: 'reply must contain data, but be less than 140 characters'}, status: :bad_request
       end
@@ -40,6 +44,10 @@ class SkitreplyController < ApplicationController
       @skitId = request.query_parameters['skitId']
       @myuid = request.headers['X-SKITTER-AUTH-USER']
       @name = request.headers['X-SKITTER-AUTH-NAME']
+      @csrf = request.headers['X-XSRF-TOKEN']
+      if @csrf.to_s.empty?
+          render json: {error: 'csrf header not set'}, status: :forbidden
+      end
       if @myuid.to_s.empty? or @name.to_s.empty? or @skitId.to_s.empty?
           render json: {error: 'skitId empty, or skitter headers not set'}, status: :forbidden
       else
