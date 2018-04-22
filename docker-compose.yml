@@ -88,6 +88,14 @@ services:
         command: dockerize -wait http://db:3306 -wait http://ca:8888 
     ca:
         build: app_ca
+    flask:
+        build: flask
+        ports:
+            - 1337:1337
+        depends_on:
+            - db
+            - ca
+        command: dockerize -wait http://db:3306 -wait http://ca:8888
     sut:
         build: testdata
     ruby:
