@@ -13,34 +13,41 @@ class SkitreplyController < ApplicationController
       end
       if @skitId.to_s.empty? or @uid.to_s.empty? or @name.to_s.empty?
           render json: {error: 'skitId empty, or skitter headers not set'}, status: :forbidden
+      else
+          # ssl verification is borked in the ruby client????
+          @client = Elasticsearch::Client.new log: true, 
+              urls: 'https://elastic:s00pers3cur3pa$$word@skitdb:9200',
+              transport_options: { ssl: { verify: false } }
+          
+          @oldskit = (@client.search index: @otherUid, id: @skitId)['hits']['hits'][0]
+
+          @toadd = {
+                      msg: @reply,
+                      name: @name, 
+                      uid: @uid,
+                      date: Time.now
+          }
+          puts @toadd
+
+          @client.update index: @otherUid, type: 'skits', id: @skitId, 
+              body: { script: { source: 'ctx._source.replies.add(params.reply)', params: { reply: @toadd } } }
+
       end
-
-      # ssl verification is borked in the ruby client????
-      @client = Elasticsearch::Client.new log: true, 
-          urls: 'https://elastic:s00pers3cur3pa$$word@skitdb:9200',
-          transport_options: { ssl: { verify: false } }
-      
-      @oldskit = (@client.search index: @otherUid, id: @skitId)['hits']['hits'][0]
-
-      @toadd = {
-                  msg: @reply,
-                  name: @name, 
-                  uid: @uid,
-                  date: Time.now
-      }
-      puts @toadd
-
-      @client.update index: @otherUid, type: 'skits', id: @skitId, 
-          body: { script: { source: 'ctx._source.replies.add(params.reply)', params: { reply: @toadd } } }
-
   end
 
   def GetSkitReply
-      @client = Elasticsearch::Client.new log: true, 
-          urls: 'https://elastic:s00pers3cur3pa$$word@skitdb:9200',
-          transport_options: { ssl: { verify: false } }
-      @id = request.query_parameters['id']
-      @result = @client.search index: 'jfb3657'
-      render json: @result
+      @uid = request.query_parameters['uid']
+      @skitId = request.query_parameters['skitId']
+      @myuid = request.headers['X-SKITTER-AUTH-USER']
+      @name = request.headers['X-SKITTER-AUTH-NAME']
+      if @myuid.to_s.empty? or @name.to_s.empty? or @skitId.to_s.empty?
+          render json: {error: 'skitId empty, or skitter headers not set'}, status: :forbidden
+      else
+          @client = Elasticsearch::Client.new log: true, 
+              urls: 'https://elastic:s00pers3cur3pa$$word@skitdb:9200',
+              transport_options: { ssl: { verify: false } }
+          @result = @client.get index: @uid, id: @skitId, type: 'skits'
+          render json: @result
+      end
   end
 end
