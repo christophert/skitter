@@ -22,9 +22,6 @@ def query_db(query, args=(), one=False, stringify=True):
     :arg stringify whether or not to return as string
     :return json dump of sql result
     """
-    if 'X-XSRF-TOKEN' not in request.headers:
-        abort(403, 'No CSRF')
-        return ""
     cur = DB.cursor()
     cur.execute(query, args)
     rows = [dict((cur.description[i][0], value) \
