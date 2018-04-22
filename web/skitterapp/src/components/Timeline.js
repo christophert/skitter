@@ -1,10 +1,8 @@
 import React from 'react';
 import { instanceOf } from 'prop-types';
-import { Component, Fragment } from 'react';
-import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
-import {
-    Media,
-    Row } from 'reactstrap';
+import { Component } from 'react';
+import { withCookies, Cookies } from 'react-cookie';
+import { Media } from 'reactstrap';
 import ReactImageFallback from "react-image-fallback";
 let cssLoaded = false;
 

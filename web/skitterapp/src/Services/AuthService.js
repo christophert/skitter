@@ -1,5 +1,3 @@
-import React from 'react'
-
 let AuthService = {
     isAuthenticated: function(callback) {
         fetch('/auth/isAuthenticated', {

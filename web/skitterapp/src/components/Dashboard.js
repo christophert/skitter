@@ -1,17 +1,11 @@
 import React from 'react';
 import { instanceOf } from 'prop-types';
 import { Component, Fragment } from 'react';
-import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
+import { withCookies, Cookies } from 'react-cookie';
 import {
     Button,
-    Card,
-    CardImg,
-    CardTitle,
-    CardSubtitle,
-    CardBody,
     Form,
     FormGroup,
-    Label,
     Input,
     Media,
     Row } from 'reactstrap';

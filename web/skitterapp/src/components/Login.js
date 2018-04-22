@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
 import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
-import { Redirect } from 'react-router-dom';
 import AuthService from '../Services/AuthService';
 
 let cssLoaded = false;
@@ -21,7 +20,7 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        AuthService.isAuthenticated(function(res) { if(res==true) { window.location.replace("/dashboard") } });
+        AuthService.isAuthenticated(function(res) { if(res===true) { window.location.replace("/dashboard") } });
     }
 
     handleChange(propertyName, event) {
