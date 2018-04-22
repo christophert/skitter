@@ -10,7 +10,8 @@ module.exports.SkitService = function SkitService(client) {
             body: {
                 name: fullname,
                 msg: message,
-                date: new Date()
+                date: new Date(),
+                replies: []
             }
         });
     }
@@ -24,7 +25,14 @@ module.exports.SkitService = function SkitService(client) {
                         properties: {
                             name: {type:'text'},
                             msg: {type:'text'},
-                            date: {type:'date'}
+                            date: {type:'date'},
+                            replies: {
+                                type: 'nested',
+                                name: {type:'text'},
+                                uid: {type: 'text'},
+                                msg: {type: 'text'},
+                                date: {type: 'date'}
+                            }
                         }
                     }
                 }
@@ -57,11 +65,11 @@ module.exports.SkitService = function SkitService(client) {
 
             return client.indices.exists({index:id})
                 .then(function (exists) {
-                    if (exists) {
+                    //if (exists) {
                         return _addSkit(id, fullname, message);
-                    }
-                    return _addIndex(id)
-                        .then(() => _addSkit(id, fullname, message));
+                    //}
+                    //return _addIndex(id)
+                    //    .then(() => _addSkit(id, fullname, message));
                 });
         },
 

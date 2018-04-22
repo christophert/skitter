@@ -90,3 +90,7 @@ services:
         build: app_ca
     sut:
         build: testdata
+    ruby:
+        build: rubyonrails
+        ports:
+            - 3000:3000
