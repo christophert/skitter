@@ -8,6 +8,7 @@ RUN apk update && \
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY default.conf /etc/nginx/conf.d/default.conf
+COPY auth /etc/nginx/auth
 COPY build.sh /
 COPY csr.json /
 

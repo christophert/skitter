@@ -1,15 +1,15 @@
 {
-	"hostname": "skitdb",
+	"hostname": "kibana.skitter.app",
 	"request": {
 		"hosts": [
-			"skitdb.skitter.app",
-            "skitdb"
+			"kibana.skitter.app",
+            "kibana"
 		],
 		"key": {
 			"algo": "rsa",
 			"size": 2048
 		},
-        "CN": "skitdb",
+        "CN": "kibana.skitter.app",
 		"names": [
 			{
 				"C": "US",
