@@ -26,14 +26,11 @@ extract_json_data ca.json certificate ca.crt
 extract_json_data full_cert.json certificate /etc/ssl/cache.pem 
 extract_json_data full_cert.json private_key certificate.key
 
-cat ca.crt
-cat /etc/ssl/cache.pem 
-
 cat ca.crt certificate.key >> /etc/ssl/cache.pem
 
 # generate dhparam
 if [ ! -f /etc/ssl/dhparam.pem ]; then
-    openssl dhparam -out /etc/ssl/dhparam.pem 2048 > /dev/null
+    openssl dhparam -out /etc/ssl/dhparam.pem 2048 2> /dev/null
 fi
 
 # clean unessessary files

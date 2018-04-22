@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
 import { withCookies, CookiesProvider, Cookies } from 'react-cookie';
+import AuthService from '../Services/AuthService';
 
 let cssLoaded = false;
 
@@ -18,30 +19,8 @@ class Login extends Component {
         };
     }
 
-    isAuthenticated() {
-        fetch('/auth/isAuthenticated', {
-            method: 'GET',
-            credentials: "include",
-            headers: {
-                'Accept': 'application/json',
-            }
-        })
-        .then((response) => {
-            if(response.ok) {
-                this.setState({isAuthenticated: true});
-                return response.json();
-            } else {
-                throw new Error("is not authenticated");
-            }
-        })
-        .then((data) => {
-            localStorage.setItem("userInfo", JSON.stringify(data));
-        })
-        .catch((error) => this.setState({isAuthenticated: false}));
-    }
-
     componentDidMount() {
-        this.isAuthenticated();
+        AuthService.isAuthenticated(function(res) { if(res===true) { window.location.replace("/dashboard") } });
     }
 
     handleChange(propertyName, event) {
@@ -72,7 +51,7 @@ class Login extends Component {
                 }
             })
             .then(() => this.setState({isLoading: false, isAuthenticated: true, attemptedLogin: true}))
-            .then(() => this.props.history.push("/dashboard"))
+            .then(() => AuthService.isAuthenticated(function(res) { if(res===true) { window.location.replace("/dashboard") }  }))
             .catch((error) => this.setState({error, isLoading: false, isAuthenticated: false, attemptedLogin: true}));
         event.preventDefault();
     }
