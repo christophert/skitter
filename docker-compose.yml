@@ -31,7 +31,7 @@ services:
         build: proxy
         volumes:
             - ./settings/code:/var/www/settingsapi
-            - ./profile_pictures:/var/www/profile_pictures
+            - profile_pictures:/var/www/profile_pictures
         environment:
             SSL_HOSTNAME: proxya
         depends_on:
@@ -42,7 +42,7 @@ services:
         build: proxy
         volumes:
             - ./settings/code:/var/www/settingsapi
-            - ./profile_pictures:/var/www/profile_pictures
+            - profile_pictures:/var/www/profile_pictures
         environment:
             SSL_HOSTNAME: proxyb 
         depends_on:
@@ -55,7 +55,7 @@ services:
         build: settings
         volumes:
             - ./settings/code:/var/www/settingsapi
-            - ./profile_pictures:/var/www/profile_pictures
+            - profile_pictures:/var/www/profile_pictures
         environment:
             SKITTER_DB_USER: $SKITTER_DB_USER
             SKITTER_DB_PASS: $SKITTER_DB_PASS
@@ -108,3 +108,5 @@ services:
         build: app_ca
     sut:
         build: testdata
+volumes:
+    profile_pictures:

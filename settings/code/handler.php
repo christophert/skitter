@@ -191,7 +191,7 @@ class UploadHandler {
         else {
         # non-chunked upload
 
-            $target = join(DIRECTORY_SEPARATOR, array($uploadDirectory, $uuid, $name));
+            $target = join(DIRECTORY_SEPARATOR, array($uploadDirectory, $name));
 
             if ($target){
                 $this->uploadName = basename($target);
@@ -200,7 +200,7 @@ class UploadHandler {
                     mkdir(dirname($target), 0777, true);
                 }
                 if (move_uploaded_file($file['tmp_name'], $target)){
-                    return array('success'=> true, "uuid" => $uuid);
+                    return array('success'=> true);
                 }
             }
 

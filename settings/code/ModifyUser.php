@@ -44,14 +44,14 @@ if(!empty($_SERVER['X-SKITTER-AUTH-USER']) && $_SERVER['REQUEST_METHOD'] === "PO
             http_response_code(200);
             die('{"success": true}');
         };
-    } else if (isset($_POST['profilepic'])) {
+    } else if (isset($_POST['qqfilename'])) {
         $uploader = new UploadHandler();
         $uploader->allowedExtensions = array("jpg");
         $uploader->sizeLimit = 1048576;
         $uploader->inputName = "profilepic";
         $result = $uploader->handleUpload("../profile_pictures", "$user_to_modify.jpg");
         header('Content-Type: application/json');
-        return json_encode($result);
+        echo json_encode($result);
     }
 } else {
     // user is not properly authenticated
