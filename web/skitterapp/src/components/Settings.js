@@ -6,20 +6,28 @@ import {
     Col,
     FormGroup,
     Label,
-    Input } from 'reactstrap';
+    Input,
+    Modal,
+    ModalHeader,
+    ModalBody } from 'reactstrap';
+import FineUploaderTraditional from 'fine-uploader-wrappers';
+import Gallery from 'react-fine-uploader';
 import { withCookies, Cookies } from 'react-cookie';
 
 import { ProfileCard } from './Profile';
 
 let cssLoaded = false;
+
+
+
 class Settings extends Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
     };
     constructor(props) {
         super(props);
-
-        this.state = { first_name: '', last_name: '', email: '', userInfo: {}, isLoading: false }
+        this.state = { first_name: '', last_name: '', email: '', userInfo: {}, isLoading: false, modal: false }
+        this.toggle = this.toggle.bind(this);
     }
 
     phpSessionCheck() {
@@ -90,8 +98,38 @@ class Settings extends Component {
         event.preventDefault();
     }
 
+    toggle() {
+        this.setState({
+            modal: !this.state.modal
+        })
+    }
+
     render() {
         if(cssLoaded === false) { cssLoaded = true; import ('./Settings.css'); }
+        let uploader = new FineUploaderTraditional({
+            options: {
+                debug: true,
+                chunking: {
+                    enabled: false
+                },
+                request: {
+                    endpoint: '/settingsapi/ModifyUser.php',
+                    inputName: 'profilepic',
+                    customHeaders: {
+                        "X-STCSRF-TOKEN": this.props.cookies.get('X-STCSRF-TOKEN')
+                    }
+                },
+                validation: {
+                    itemLimit: 1,
+                    acceptFiles: 'image/jpeg',
+                    allowedExtensions: ['jpg'],
+                    sizeLimit: 1048576
+                },
+                retry: {
+                    enableAuto: false
+                }
+            }
+        })
         return (
             <Fragment>
                 <div className="mb-4"></div>
@@ -122,7 +160,7 @@ class Settings extends Component {
                             <FormGroup row>
                                 <Label for="email" sm={3}>File</Label>
                                 <Col sm={9}>
-                                    <Input type="file" name="profilepic" id="profilepic" />
+                                    <Button color="primary" onClick={this.toggle}>Upload new profile picture</Button>
                                 </Col>
                             </FormGroup>
                             <hr/>
@@ -134,6 +172,12 @@ class Settings extends Component {
                         </form>
                     </div>
                 </div>
+                <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                    <ModalHeader toggle={this.toggle}>Update Profile Picture</ModalHeader>
+                    <ModalBody>
+                        <Gallery uploader={uploader} />
+                    </ModalBody>
+                </Modal>
             </Fragment>
         )
     }
