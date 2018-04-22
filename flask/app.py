@@ -22,6 +22,9 @@ def query_db(query, args=(), one=False, stringify=True):
     :arg stringify whether or not to return as string
     :return json dump of sql result
     """
+    if 'X-XSRF-TOKEN' not in request.headers:
+        abort(403, 'No CSRF')
+        return ""
     cur = DB.cursor()
     cur.execute(query, args)
     rows = [dict((cur.description[i][0], value) \
@@ -38,6 +41,9 @@ def get_folowers():
     Grabs all followers for a given user id (request.args.get(uid))
     :return json dump of followers
     """
+    if 'X-XSRF-TOKEN' not in request.headers:
+        abort(403, 'No CSRF')
+        return ""
     if 'X-SKITTER-AUTH-USER' not in request.headers:
         abort(400, 'No Skitter Header assigned')
         return ""
@@ -53,6 +59,9 @@ def get_users():
     user id (request.args.get(uid))
     :return json dump of account objects
     """
+    if 'X-XSRF-TOKEN' not in request.headers:
+        abort(403, 'No CSRF')
+        return ""
     if 'X-SKITTER-AUTH-USER' not in request.headers:
         abort(400, 'No Skitter Header assigned')
         return ""
@@ -72,7 +81,7 @@ def follow_user():
         abort(400, 'Requires json form: {uid:\'\', follow: \'\'}')
         return ""
     user = request.headers['X-SKITTER-AUTH-USER']
-    if user is None:
+    if user is None or 'X-XSRF-TOKEN' not in request.headers:
         abort(400, 'No Skitter Header assigned')
         return ""
     follow = data['follow']
@@ -99,6 +108,9 @@ def unfollow_user():
     """
     Adds a followed user to the database table if able
     """
+    if 'X-XSRF-TOKEN' not in request.headers:
+        abort(403, 'No CSRF')
+        return ""
     user = request.headers['X-SKITTER-AUTH-USER']
     if user is None:
         abort(400, 'No Skitter Header assigned')

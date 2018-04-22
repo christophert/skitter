@@ -22,9 +22,6 @@ extract_json_data ca.json certificate ca.crt
 extract_json_data full_cert.json certificate certificate.crt
 extract_json_data full_cert.json private_key certificate.key
 
-cat ca.crt
-cat certificate.crt
-
 cat ca.crt >> certificate.crt
 
 # clean unessessary files

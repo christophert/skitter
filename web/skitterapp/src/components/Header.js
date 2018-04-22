@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component, Fragment } from 'react';
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {
     Form,
@@ -14,7 +14,6 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem } from 'reactstrap';
-import {GearIcon} from 'react-octicons';
 
 let cssLoaded = false;
 class Header extends Component {

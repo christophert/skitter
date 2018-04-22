@@ -29,20 +29,46 @@ services:
             - proxyb
     proxya:
         build: proxy
+        volumes:
+            - ./settings/code:/var/www/settingsapi
+            - profile_pictures:/var/www/profile_pictures
         environment:
             SSL_HOSTNAME: proxya
         depends_on:
             - pweb
             - authentication
+            - php
+            - ruby
+            - kibana
+            - skitcreate
+            - flask
     proxyb:
         build: proxy
+        volumes:
+            - ./settings/code:/var/www/settingsapi
+            - profile_pictures:/var/www/profile_pictures
         environment:
             SSL_HOSTNAME: proxyb 
         depends_on:
             - pweb
             - authentication
+            - php
+            - ruby
+            - kibana
+            - skitcreate
+            - flask
     pweb:
         build: web
+    php:
+        build: settings
+        volumes:
+            - ./settings/code:/var/www/settingsapi
+            - profile_pictures:/var/www/profile_pictures
+        environment:
+            SKITTER_DB_USER: $SKITTER_DB_USER
+            SKITTER_DB_PASS: $SKITTER_DB_PASS
+        depends_on:
+            - db
     # Activity 7
     skitdb:
         build: elasticsearch
@@ -77,8 +103,8 @@ services:
         restart: always
         environment:
             MYSQL_DATABASE: skitter
-            MYSQL_USER: skitter_overlord
-            MYSQL_PASSWORD: a_GENerIC_p@ssW0rd
+            MYSQL_USER: $SKITTER_DB_USER 
+            MYSQL_PASSWORD: $SKITTER_DB_PASS
             MYSQL_ROOT_PASSWORD: "included because docker said so"
     authentication:
         build: auth
@@ -92,8 +118,6 @@ services:
         build: app_ca
     flask:
         build: flask
-        ports:
-            - 1337:1337
         depends_on:
             - db
             - ca
@@ -102,5 +126,5 @@ services:
         build: testdata
     ruby:
         build: rubyonrails
-        ports:
-            - 3000:3000
+volumes:
+    profile_pictures:
