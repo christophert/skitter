@@ -9,6 +9,10 @@ if(!empty($_SERVER['X-SKITTER-AUTH-USER']) && $_SERVER['REQUEST_METHOD'] === "PO
     //attributes that they can modify: firstName, lastName, email, and profile picture
     $valid_keys = [ "first_name", "last_name", "email" ];
     $keys_to_modify = array_intersect($valid_keys, array_keys($_POST));
+
+    foreach($keys_to_modify as $key) {
+        $_POST[$key] = htmlspecialchars($_POST[$key], ENT_QUOTES, 'utf-8');
+    }
     
     // check if user exists
     $query = "SELECT COUNT(*) FROM account WHERE uid = :uid";

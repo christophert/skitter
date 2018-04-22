@@ -140,7 +140,7 @@ class Settings extends Component {
             <Fragment>
                 <div className="mb-4"></div>
                 <div className="row">
-                    <ProfileCard/>
+                    <ProfileCard isSelf="true" />
                     <div className="col-8">
                         <h1 className="color-purple">settings</h1>
                         <hr/>

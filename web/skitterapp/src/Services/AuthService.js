@@ -1,7 +1,7 @@
 import React from 'react'
 
 let AuthService = {
-    isAuthenticated: function() {
+    isAuthenticated: function(callback) {
         fetch('/auth/isAuthenticated', {
             method: 'GET',
             credentials: "include",
@@ -14,14 +14,17 @@ let AuthService = {
                 return response.json();
             } else {
                 localStorage.removeItem("userInfo");
-                throw new Error("is not authenticated");
+                if(callback) {callback(false)} ;
+                throw new Error("erro");
             }
         })
         .then((data) => {
             localStorage.setItem("userInfo", JSON.stringify(data));
-            return true;
+            if(callback) {
+                callback(true);
+            }
         })
-        .catch((error) => { return error; });
+        .catch((error) => {  return error; });
     }
 }
 
