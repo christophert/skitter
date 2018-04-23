@@ -11,20 +11,61 @@ import {
     Row } from 'reactstrap';
 import ProfileCard from './ProfileCard';
 import Timeline from './Timeline';
+import ReactImageFallback from "react-image-fallback";
 
+let cssLoaded = false;
 class Dashboard extends Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
     };
     constructor(props) {
         super(props);
-        this.state = { msg: '', isLoading: false };
+        this.state = { msg: '', isLoading: false, userInfo: {}, firstName: '', lastName: '', uid: ''};
+        const userInfo = localStorage.getItem('userInfo');
+        if(userInfo) {
+            this.setState({userInfo:JSON.parse(userInfo)});
+        }
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    didComponentMount() {
+        this.setState({uid: this.state.userInfo.uid, firstName: this.state.userInfo.firstName, lastName: this.state.userInfo.lastName}, function() {
+        this.getFollowing();
+    });
+
     }
 
     handleChange(propertyName, event) {
         let currentState = this.state;
         currentState[propertyName] = event.target.value;
         this.setState(currentState);
+    }
+
+    getFollowing() {
+        this.setState({isLoading: true});
+        const { cookies } = this.props;
+        let urlParams = new URLSearchParams();
+        urlParams.append("uid", this.state.uid);
+        fetch(`/follows/GetFollowers?${urlParams.toString()}`, {
+            method: 'GET',
+            credentials: "include",
+            headers: {
+                'Accept': 'application/json',
+                'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
+            }
+        })
+            .then(response => {
+                if(!response.ok) {
+                    throw new Error("Response is not OK");
+                }
+                this.setState({isLoading: false});
+                return response.json();
+            })
+            .then((data) => {
+                this.setState({following: data, followingCount: data.length, isLoading: false });
+            })
+            .catch((error) => this.setState({error, isLoading: false}));
     }
 
     handleSubmit(event) {
@@ -54,6 +95,7 @@ class Dashboard extends Component {
     }
 
     render() {
+        if(cssLoaded === false) { cssLoaded = true; import ('./Timeline.css'); }
         return (
             <Fragment>
                 <div className="mb-4"></div>
@@ -62,7 +104,10 @@ class Dashboard extends Component {
                     <div className="col-8">
                         <Media>
                             <Media left href="/profile">
-                                <Media object src="//via.placeholder.com/64x64" alt="self profile" className="rounded-circle mr-3" />
+                                <ReactImageFallback src={"/profile_pictures/" + this.state.uid + ".jpg"}
+                                    fallbackImage="//via.placeholder.com/64x64"
+                                    alt={this.state.user}
+                                    className="skit-profile-img media-object rounded-circle mr-3" />
                             </Media>
                             <Media body>
                                 <Form onSubmit={this.handleSubmit.bind(this)}>
@@ -76,7 +121,7 @@ class Dashboard extends Component {
                             </Media>
                         </Media>
                         <hr/>
-                        <Timeline username="ctt1414" />
+                        <Timeline username={this.state.uid} following={this.state.following} />
                     </div>
 
                 </Row>

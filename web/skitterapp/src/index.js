@@ -10,6 +10,7 @@ import Dashboard from './components/Dashboard';
 import Settings from './components/Settings';
 import Profile from './components/Profile';
 import PrivateRoute from './PrivateRoute';
+import Search from './components/Search';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render((
@@ -24,6 +25,7 @@ ReactDOM.render((
                 <PrivateRoute exact path="/settings" component={Settings}/>
                 <PrivateRoute exact path="/profile" component={Profile}/>
                 <PrivateRoute path='/profile/:uid' component={Profile}/>
+                <PrivateRoute path='/search/:term' component={Search}/>
             </div>
         </CookiesProvider>
     </Router>), document.getElementById('root'));
