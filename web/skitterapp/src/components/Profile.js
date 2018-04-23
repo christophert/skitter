@@ -1,72 +1,11 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import {
-    Button,
-    Card,
-    CardTitle,
-    CardSubtitle,
-    CardBody,
-    Col,
     Row } from 'reactstrap';
+import { withCookies } from 'react-cookie';
 
-import ReactImageFallback from "react-image-fallback";
 import Timeline from './Timeline';
-
-export class ProfileCard extends Component {
-    constructor(props) {
-        super(props);
-        const userInfo = localStorage.getItem('userInfo');
-        if(userInfo) {
-            let uInfo = JSON.parse(userInfo);
-            this.state = { userInfo: uInfo, isFollowing: false, isSelf: props.isSelf, name: props.firstName + " " + props.lastname, username: props.username }
-        } else {
-            this.state = { userInfo: {}, isFollowing: false, isSelf: props.isSelf, name: props.firstName + " " + props.lastname, username: props.username }
-        }
-    }
-
-    componentDidMount() {
-        if(this.state.isSelf) {
-            this.setState({name: this.state.userInfo.firstName + " " + this.state.userInfo.lastName, username: this.state.userInfo.uid })
-        }
-    }
-
-
-
-    render() {
-        let followButton = [];
-        if (!this.state.isSelf) { //no follow button
-            followButton.push(<br key="br" />);
-            if(this.state.isFollowing) {
-                followButton.push(<Button block color="secondary" key="bun">Unfollow</Button>);
-            } else {
-                followButton.push(<Button block className="bg-purple" key="bf">Follow</Button>);
-            }
-        }
-        return (
-            <div className="col-4">
-                <Card className="user-profile-card">
-
-                    <ReactImageFallback src={"/profile_pictures/" + this.state.username + ".jpg"}
-                        fallbackImage="//via.placeholder.com/200x100"
-                        alt={this.state.username}
-                        className="card-img-top user-profile-card-img" />
-                        
-                    <CardBody>
-                        <CardTitle>{this.state.name}</CardTitle>
-                        <CardSubtitle>@{this.state.username}</CardSubtitle>
-                        <hr/>
-                        <Row>
-                            <Col xs="4" className="border border-top-0 border-bottom-0 border-left-0"><small>Skits</small><br/>123</Col>
-                            <Col xs="4" className="border border-top-0 border-bottom-0 border-left-0"><small>Followers</small><br/>123</Col>
-                            <Col xs="4"><small>Following</small><br/>123</Col>
-                        </Row>
-                        {followButton}
-                    </CardBody>
-                </Card>
-            </div>
-        )
-    }
-}
+import ProfileCard from './ProfileCard';
 
 class Profile extends Component {
     constructor(props) {
@@ -112,5 +51,5 @@ class Profile extends Component {
     }
 }
 
-export default Profile
+export default withCookies(Profile)
 
