@@ -3,6 +3,9 @@
 
 Detailed documentation can be found on the [Skitter wiki](https://github.com/christophert/skitter/wiki)
 
+**Note:** For this project to work  you must have your virual memory set to 262144 for elasticsearch, and your operating system must support volumes
+`sysctl -w vm.max_map_count=262144`
+
 ## Table of Contents
 * [Development & Testing](#development--testing)
   * [Prerequsites](#prerequsites)
