@@ -25,6 +25,7 @@ To commence development, you will require the following:
 
 * UI - Skit replies (the backend is implemented)
 * All Unit tests - some unit tests were included, but not all of them, additionaly the selenium test was not created due to lack of time
+* UI - dashboard timeline with everyone (backend implemented)
 
 ## Endpoints
 
