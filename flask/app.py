@@ -75,7 +75,7 @@ def follow_user():
     """
     data = request.get_json()
     if data is None or 'follow' not in data:
-        abort(400, 'Requires json form: {uid:\'\', follow: \'\'}')
+        abort(400, 'Requires json form: {follow: \'\'}')
         return ""
     user = request.headers['X-SKITTER-AUTH-USER']
     if user is None or 'X-XSRF-TOKEN' not in request.headers:
@@ -114,7 +114,7 @@ def unfollow_user():
         return ""
     follow = request.args.get('follow')
     if user is None or follow is None:
-        abort(400, 'Requires uid and follow as query parameters')
+        abort(400, 'Requires follow as query parameters')
         return ""
 
     if len(query_db('SELECT * FROM follower WHERE user_id=%s ' + \
