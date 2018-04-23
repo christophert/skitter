@@ -1,5 +1,9 @@
 sudo: required
 
+language: python
+python: "3.6"
+install: "pip install requests pylint"
+
 services:
   - docker
 
@@ -22,6 +26,9 @@ script:
   - docker ps | grep -q skitter_cacheb_1
   - docker ps | grep -q skitter_db_1
   - docker ps | grep -q skitter_ca_1
+  - pylint flask/app.py
+  - python testdata/skits.py
+  - python testdata/follow.py
 
 after_script:
   - docker-compose down
