@@ -21,6 +21,10 @@ To commence development, you will require the following:
 * Docker 17.12.0-ce+
 * docker-compose 1.19.0+
 
+## Unimplemented Features:
+
+* UI - Skit replies (the backend is implemented)
+* All Unit tests - some unit tests were included, but not all of them, additionaly the selenium test was not created due to lack of time
 
 ## Endpoints
 
