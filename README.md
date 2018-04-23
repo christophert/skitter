@@ -126,7 +126,7 @@ body example: `{"follow": "ctt1414"}`
 
 **requires authorization, verified by proxy server**
 
-Expects: Query parameter `uid` which is the uid of the person you want to unfollow
+Expects: Query parameter `follow` which is the uid of the person you want to unfollow
 
 
 ### Ruby on Rails
