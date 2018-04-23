@@ -3,6 +3,9 @@
 
 Detailed documentation can be found on the [Skitter wiki](https://github.com/christophert/skitter/wiki)
 
+**Note:** For this project to work  you must have your virual memory set to 262144 for elasticsearch, and your operating system must support volumes
+`sysctl -w vm.max_map_count=262144`
+
 ## Table of Contents
 * [Development & Testing](#development--testing)
   * [Prerequsites](#prerequsites)
@@ -18,6 +21,11 @@ To commence development, you will require the following:
 * Docker 17.12.0-ce+
 * docker-compose 1.19.0+
 
+## Unimplemented Features:
+
+* UI - Skit replies (the backend is implemented)
+* All Unit tests - some unit tests were included, but not all of them, additionaly the selenium test was not created due to lack of time
+* UI - dashboard timeline with everyone (backend implemented)
 
 ## Endpoints
 
