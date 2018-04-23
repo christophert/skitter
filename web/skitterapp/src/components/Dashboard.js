@@ -9,7 +9,7 @@ import {
     Input,
     Media,
     Row } from 'reactstrap';
-import { ProfileCard } from './Profile';
+import ProfileCard from './ProfileCard';
 import Timeline from './Timeline';
 
 class Dashboard extends Component {

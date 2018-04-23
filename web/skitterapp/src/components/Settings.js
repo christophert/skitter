@@ -14,7 +14,7 @@ import FineUploaderTraditional from 'fine-uploader-wrappers';
 import Gallery from 'react-fine-uploader';
 import { withCookies, Cookies } from 'react-cookie';
 
-import { ProfileCard } from './Profile';
+import ProfileCard from './ProfileCard';
 
 let cssLoaded = false;
 
