@@ -123,7 +123,7 @@ class ProfileCard extends Component {
         } else {
             //follow false
             let urlParams = new URLSearchParams();
-            urlParams.append("uid", uid);
+            urlParams.append("follow", uid);
             fetch(`/follows/UnfollowUser?${urlParams.toString()}`, {
                 method: 'DELETE',
                 credentials: "include",

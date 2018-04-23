@@ -13,7 +13,7 @@ class Timeline extends Component {
     constructor(props) {
         super(props);
         console.log(JSON.stringify(props));
-        this.state = { timelineData: [], isLoading: false, user: props.username };
+        this.state = { timelineData: [], isLoading: false, user: props.username, following: props.following };
         this.getTimelineData = this.getTimelineData.bind(this);
     }
 
@@ -25,28 +25,57 @@ class Timeline extends Component {
         this.setState({isLoading: true});
         const { cookies } = this.props;
 
-        let urlParams = new URLSearchParams();
-        urlParams.append("id", this.state.user);
+        if(this.state.following) { //dashboard
+            for(var i = 0; i < this.state.following.length; i++) {
+                let urlParams = new URLSearchParams();
+                urlParams.append("id", this.state.following[i].following);
 
-        fetch(`/skits/GetSkits?${urlParams.toString()}`, {
-            method: 'GET',
-            credentials: "include",
-            headers: {
-                'Accept': 'application/json',
-                'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
+                fetch(`/skits/GetSkits?${urlParams.toString()}`, {
+                    method: 'GET',
+                    credentials: "include",
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
+                    }
+                })
+                    .then(response => {
+                        if(!response.ok) {
+                            throw new Error("Response is not OK");
+                        }
+                        this.setState({isLoading: false});
+                        return response.json();
+                    })
+                    .then((data) => {
+                        this.setState(prevState => ({
+                            timelineData: [...prevState.timelineData, data.hits.hits]
+                        }));
+                    })
+                    .catch((error) => this.setState({error, isLoading: false}));
             }
-        })
-            .then(response => {
-                if(!response.ok) {
-                    throw new Error("Response is not OK");
+        } else {
+            let urlParams = new URLSearchParams();
+            urlParams.append("id", this.state.user);
+
+            fetch(`/skits/GetSkits?${urlParams.toString()}`, {
+                method: 'GET',
+                credentials: "include",
+                headers: {
+                    'Accept': 'application/json',
+                    'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
                 }
-                this.setState({isLoading: false});
-                return response.json();
             })
-            .then((data) => {
-                this.setState({timelineData: data.hits.hits, isLoading: false});
-            })
-            .catch((error) => this.setState({error, isLoading: false}));
+                .then(response => {
+                    if(!response.ok) {
+                        throw new Error("Response is not OK");
+                    }
+                    this.setState({isLoading: false});
+                    return response.json();
+                })
+                .then((data) => {
+                    this.setState({timelineData: data.hits.hits, isLoading: false});
+                })
+                .catch((error) => this.setState({error, isLoading: false}));
+        }
     }
 
     render() {
@@ -55,8 +84,8 @@ class Timeline extends Component {
         let skits = this.state.timelineData.map((skit) => {
             return (
                 <Media key={skit._id} className="mb-3">
-                    <Media left href="#">
-                        <ReactImageFallback src={"/profile_pictures/" + this.state.user + ".jpg"}
+                    <Media left href={"/profile/" + skit._index}>
+                        <ReactImageFallback src={"/profile_pictures/" + skit._index + ".jpg"}
                             fallbackImage="//via.placeholder.com/64x64"
                             alt={this.state.user}
                             className="skit-profile-img media-object rounded-circle mr-3" />

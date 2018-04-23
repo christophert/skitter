@@ -21,8 +21,10 @@ class Header extends Component {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            searchTerm: ''
         };
+        this.handleSearch = this.handleSearch.bind(this);
     }
     toggle() {
         this.setState({
@@ -37,13 +39,24 @@ class Header extends Component {
         }  
     }
 
+    handleSearch(event) {
+        window.location.replace("/search/" + this.state.searchTerm);
+        event.preventDefault();
+    }
+
+    handleChange(propertyName, event) {
+        let currentState = this.state;
+        currentState[propertyName] = event.target.value;
+        this.setState(currentState);
+    }
+
     render() {
         if(cssLoaded === false) { cssLoaded = true; import ('./Header.css'); }
         let navState = [];
         if(this.state.userInfo) {
             let searchForm = (
-                <Form className="form-inline my-2 my-lg-0" key="searchForm">
-                    <input className="form-control header-search mr-sm-2 bg-purple" type="search" placeholder="Search" aria-label="Search" />
+                <Form className="form-inline my-2 my-lg-0" key="searchForm" onSubmit={this.handleSearch.bind(this)}>
+                    <input className="form-control header-search mr-sm-2 bg-purple" type="search" placeholder="Search" aria-label="Search" onChange={this.handleChange.bind(this, 'searchTerm')} />
                 </Form>
             )
             navState.push(searchForm);
